@@ -1,0 +1,29 @@
+pin camera C6;
+
+pin laser1 C3;
+pin laser2 C2;
+pin laser3 C48;
+pin laser4 C49;
+pin laser5 C46;
+pin laser6 C45;
+
+pin ttl1 C43;
+pin ttl2 C42;
+pin ttl3 C8;
+pin ttl4 C9;
+pin ttl5 C40;
+pin ttl6 C39;
+
+pin servo1 A2;
+pin servo2 A3;
+pin servo3 A49;
+pin servo4 A48;
+pin servo5 A45;
+pin servo6 A46;
+
+pin pwm1 A42;
+pin pwm2 A43;
+pin pwm3 A9;
+pin pwm4 A8;
+pin pwm5 A39;
+pin pwm6 A40;

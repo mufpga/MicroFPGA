@@ -1,0 +1,77 @@
+/******************************************************************************
+   This module triggers a laser using a TTL signal based on processing a camera
+   triggeing in put.
+   The laser triggering module takes multiple inputs:
+   * cam_sig: camera triggering signal (high when exposing, low when registring 
+              the pixel values).
+   * mode: only values 0 to 4 are considered, the modes are on, off, pulsing on 
+           camera rising edge, pulsing on camera falling edge and following the
+           camera signal.
+   * duration: when the mode is set to pulsing (RISING or FALLING), the laser is 
+               pulsed for <duration> us.  
+   * sequence: a 16 bits sequence determining the triggering pattern of the laser.
+               On a 0, the laser will remain off during the frame. On a 1, it will
+               be triggered.
+   * sync: sequence counter given by a cam_synchro module.
+*/
+
+module laser_trigger (
+    input clk,  // clock
+    input rst,  // reset
+    input cam_sig,
+    input mod[3],
+    input dura[16],
+    input seq[16],
+    input sync[4],
+    output lasersignal
+  ) {
+ 
+  const OFF = 0;
+  const ON = 1;
+  const RISING = 2;
+  const FALLING = 3;
+  const FOLLOW = 4;
+  
+  const NM_CYCLES = 100; // convert to ~us
+  var plength;
+    
+ .clk(clk){ 
+    .rst(rst) {
+      dff sig_sync[2];
+      dff sig_old;
+      dff count_sig[22];
+  }}
+  
+  always {
+    plength = dura*NM_CYCLES;
+    
+    sig_sync.d[0] = cam_sig;
+    sig_sync.d[1] = sig_sync.q[0];
+    sig_old.d = sig_sync.q[1];
+    
+    if (!&count_sig.q){ 
+      count_sig.d = count_sig.q + 1;
+    }
+    
+    lasersignal=0;
+    
+    case(mod){
+      OFF:
+        lasersignal = 0;
+      ON:
+        lasersignal = 1;
+      RISING:
+        if(sig_old.q == 0 &&  sig_sync.q[1] == 1){ // detect rising edge
+            count_sig.d = 0;
+        }
+        lasersignal = (sig_sync.q[1] && seq[15-sync]) && count_sig.q<plength;
+      FALLING:
+        if(sig_old.q == 1 &&  sig_sync.q[1] == 0){ // detect falling edge
+            count_sig.d = 0;
+        }
+        lasersignal = (!sig_sync.q[1] && seq[15-sync]) && count_sig.q<plength;
+      FOLLOW:
+        lasersignal = (sig_sync.q[1] && seq[15-sync]);
+    }
+  }
+}

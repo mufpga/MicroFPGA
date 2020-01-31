@@ -1,0 +1,255 @@
+/**********************************************************************************
+   MicroFPGA for the Au board. It contols the triggering of 6 lasers (from a camera
+   signal), 6 PWM signals, 6 servos, 6 TTL outputs and reads-out 8 analog channels.
+   
+   Written by Joran Deschamps, EMBL (2019)
+*/
+
+module au_top (
+    input clk,              // 100MHz clock
+    input rst_n,            // reset button (active low)
+    output led [8],         // 8 user controllable LEDs
+    input usb_rx,           // USB->Serial input
+    output usb_tx,           // USB->Serial output
+    input camera,
+    output laser1,
+    output laser2,
+    output laser3,
+    output laser4,
+    output laser5,
+    output laser6,
+    output ttl1,
+    output ttl2,
+    output ttl3,
+    output ttl4,
+    output ttl5,
+    output ttl6,
+    output servo1,
+    output servo2,
+    output servo3,
+    output servo4,
+    output servo5,
+    output servo6,
+    output pwm1,
+    output pwm2,
+    output pwm3,
+    output pwm4,
+    output pwm5,
+    output pwm6,
+    input vp0,
+    input vn0,
+    input vp1,
+    input vn1,
+    input vp2,
+    input vn2,
+    input vp3,
+    input vn3,
+    input vp4,
+    input vn4,
+    input vp5,
+    input vn5,
+    input vp6,
+    input vn6,
+    input vp7,
+    input vn7,
+    input vp,
+    input vn
+  ) {
+  
+  const VERSION = 2;
+  const ID = 79; // Au atomic number
+  
+  const ADDRESS_VERSION = 100;
+  const ADDRESS_ID = 101;
+  const ERROR_UNKNOW_COMMAND = 11206655; // only answer with meaningful data in the 3rd byte
+  const NUM_LASERS = 6;
+  const NUM_PWM = 6;
+  const NUM_TTL = 6;
+  const NUM_SERVOS = 6;
+  const NUM_ANALOG = 8;
+  
+  sig rst;  // reset signal
+   
+  .clk(clk) {
+    reset_conditioner reset_cond;
+     
+    .rst(rst){
+      
+      uart_rx rx (#BAUD(1000000), #CLK_FREQ(100000000)); // serial receiver
+      uart_tx tx (#BAUD(1000000), #CLK_FREQ(100000000)); // serial transmitter
+      
+      reg_interface reg;
+            
+      // lasers
+      laser_trigger l[NUM_LASERS];
+      cam_synchro camsync; // to synchronize all lasers on the same frame counter
+      
+      dff sequence[NUM_LASERS][16];
+      dff duration[NUM_LASERS][16];
+      dff mode[NUM_LASERS][3];
+      
+      // ttls
+      dff ttl[NUM_TTL];
+      
+      // servos
+      servo_standard servo_controller[NUM_SERVOS];
+      dff position[NUM_SERVOS][16];
+      dff servo_sig_update[NUM_SERVOS];
+      servo_stop servo_sig[NUM_SERVOS]; // to shut down the servos 10 sec after every movement
+      
+      // pwm
+      pwm pulsewm[NUM_PWM](#TOP(254),#DIV(9),#WIDTH(8));
+      dff dutycycle[NUM_PWM][8];
+      dff pwmupdate[NUM_PWM];
+      
+      // analog reader
+      analog analog_read;
+      dff analog_out[NUM_ANALOG][16];
+    }
+  }
+
+  always {
+	  led = 8b0;       
+    tx.block = 0; // no blocking
+  
+    reset_cond.in = ~rst_n; // input raw inverted reset signal
+    rst = reset_cond.out;   // conditioned reset
+    
+    rx.rx = usb_rx;         // connect rx input
+    usb_tx = tx.tx;         // connect tx output 
+         
+    // connect reg interface to avr interface
+    reg.rx_data = rx.data;
+    reg.new_rx_data = rx.new_data;
+    tx.data = reg.tx_data;
+    tx.new_data = reg.new_tx_data;
+    reg.tx_busy = tx.busy;
+     
+    reg.regIn.drdy = 0;                   // default to not ready
+    reg.regIn.data = 32bx;               
+    
+    // updates default to 0
+    pwmupdate.d = NUM_PWMx{0};
+    servo_sig_update.d = NUM_SERVOSx{0};
+    
+    /////////////////////////////////////////////////////////
+    /// Communication based on the register interface
+    /// (see Alchitry Lucid tutorials) 
+    if (reg.regOut.new_cmd) { // new command
+      if (reg.regOut.write) { // if write
+        if (reg.regOut.address < NUM_LASERS) {         // Laser modes  
+          mode.d[reg.regOut.address] = reg.regOut.data[2:0];     
+        } else if (reg.regOut.address < 10+NUM_LASERS) {         // Laser duration
+          duration.d[reg.regOut.address-10] = reg.regOut.data[15:0]; 
+        } else if (reg.regOut.address < 20+NUM_LASERS) {            // Laser sequence
+          sequence.d[reg.regOut.address-20] = reg.regOut.data[15:0];    
+        } else if (reg.regOut.address < 30+NUM_TTL){           // TTL
+          ttl.d[reg.regOut.address-30] = reg.regOut.data[0];
+        } else if (reg.regOut.address < 40+NUM_SERVOS){           // Servo
+          position.d[reg.regOut.address-40] = reg.regOut.data[15:0];
+          servo_sig_update.d[reg.regOut.address-40] = 1;
+        } else if (reg.regOut.address < 50+NUM_PWM){           // PWM
+          dutycycle.d[reg.regOut.address-50] = reg.regOut.data[7:0];
+          pwmupdate.d[reg.regOut.address-50] = 1;
+        } 
+      } else { // read
+         if (reg.regOut.address < NUM_LASERS) {                // Laser modes 
+          reg.regIn.data = mode.q[reg.regOut.address];        
+          reg.regIn.drdy = 1;    
+        } else if (reg.regOut.address < 10+NUM_LASERS) {       // Laser duration
+          reg.regIn.data = duration.q[reg.regOut.address-10];        
+          reg.regIn.drdy = 1;    
+        } else if (reg.regOut.address < 20+NUM_LASERS) {       // Laser sequence
+          reg.regIn.data = sequence.q[reg.regOut.address-20];        
+          reg.regIn.drdy = 1;       
+        } else if (reg.regOut.address < 30+NUM_TTL){           // TTL
+          reg.regIn.data = ttl.q[reg.regOut.address-30];        
+          reg.regIn.drdy = 1;
+        } else if (reg.regOut.address < 40+NUM_SERVOS){        // Servo
+          reg.regIn.data = position.q[reg.regOut.address-40];        
+          reg.regIn.drdy = 1;
+        } else if (reg.regOut.address < 50+NUM_PWM){           // PWM
+          reg.regIn.data = dutycycle.q[reg.regOut.address-50];        
+          reg.regIn.drdy = 1;     
+        } else if (reg.regOut.address < 60+NUM_ANALOG) {        // Analog input   
+          reg.regIn.data = analog_out.q[reg.regOut.address-60];        
+          reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDRESS_VERSION) {    // Version    
+          reg.regIn.data = VERSION; // version number      
+          reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDRESS_ID) {    // ID   
+          reg.regIn.data = ID; // version number      
+          reg.regIn.drdy = 1;             
+        } else { // Error
+          reg.regIn.data = ERROR_UNKNOW_COMMAND;        
+          reg.regIn.drdy = 1; 
+        }    
+      }
+    }
+    
+    ///////////////// Lasers
+    camsync.camera = camera;
+    l.cam_sig = NUM_LASERSx{camera};
+    l.seq = sequence.q;
+    l.mod = mode.q;
+    l.dura = duration.q; 
+    l.sync = NUM_LASERSx{{camsync.sync}};
+    
+    laser1 = l.lasersignal[0]; // laser trigger outputs
+    laser2 = l.lasersignal[1];
+    laser3 = l.lasersignal[2];
+    laser4 = l.lasersignal[3];
+    laser5 = l.lasersignal[4];
+    laser6 = l.lasersignal[5];
+    
+    //////////////// TTLs
+    ttl1 = ttl.q[0];
+    ttl2 = ttl.q[1];
+    ttl3 = ttl.q[2];
+    ttl4 = ttl.q[3];
+    ttl5 = ttl.q[4];
+    ttl6 = ttl.q[5];
+    
+    //////////////// Servos
+    servo_controller.position = position.q;
+    servo_sig.update = servo_sig_update.q;
+    servo_sig.signal_in = servo_controller.servo;
+    servo1 = servo_sig.signal_out[0]; // servo outputs from the servo_stop module
+    servo2 = servo_sig.signal_out[1];
+    servo3 = servo_sig.signal_out[2];
+    servo4 = servo_sig.signal_out[3];
+    servo5 = servo_sig.signal_out[4];
+    servo6 = servo_sig.signal_out[5];
+    
+    //////////////// PWM
+    pulsewm.update = pwmupdate.q;
+    pulsewm.value = dutycycle.q;
+    pwm1 = pulsewm.pulse[0];
+    pwm2 = pulsewm.pulse[1];
+    pwm3 = pulsewm.pulse[2];
+    pwm4 = pulsewm.pulse[3];
+    pwm5 = pulsewm.pulse[4];
+    pwm6 = pulsewm.pulse[5];
+    
+    //////////////// Analog read
+    analog_read.vp0 = vp0;
+    analog_read.vn0 = vn0;
+    analog_read.vp1 = vp1;
+    analog_read.vn1 = vn1;
+    analog_read.vp2 = vp2;
+    analog_read.vn2 = vn2;
+    analog_read.vp3 = vp3;
+    analog_read.vn3 = vn3;
+    analog_read.vp4 = vp4;
+    analog_read.vn4 = vn4;
+    analog_read.vp5 = vp5;
+    analog_read.vn5 = vn5;
+    analog_read.vp6 = vp6;
+    analog_read.vn6 = vn6;
+    analog_read.vp7 = vp7;
+    analog_read.vn7 = vn7;
+    analog_read.vp = vp;
+    analog_read.vn = vn;
+    analog_out.d = analog_read.signals;
+  }
+}
