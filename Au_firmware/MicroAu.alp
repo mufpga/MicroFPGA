@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="MicroAu" board="Alchitry Au" language="Lucid" version="2">
+  <files>
+    <component>cclk_detector.luc</component>
+    <component>reg_interface.luc</component>
+    <src top="true">au_top.luc</src>
+    <component>uart_rx.luc</component>
+    <component>pwm.luc</component>
+    <component>counter.luc</component>
+    <component>spi_slave.luc</component>
+    <src>cam_synchro.luc</src>
+    <component>uart_tx.luc</component>
+    <src>servo_stop.luc</src>
+    <src>servo_standard.luc</src>
+    <src>laser_trigger.luc</src>
+    <component>reset_conditioner.luc</component>
+    <src>analog.luc</src>
+    <constraint>xadc.xdc</constraint>
+    <constraint lib="true">alchitry.acf</constraint>
+    <constraint lib="true">au.xdc</constraint>
+    <constraint>user.acf</constraint>
+    <core name="xadc_wiz_0">
+      <src>xadc_wiz_0.xci</src>
+      <stub>xadc_wiz_0_stub.v</stub>
+    </core>
+  </files>
+</project>
