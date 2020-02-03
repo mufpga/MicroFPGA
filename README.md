@@ -14,7 +14,7 @@ MicroFPGA is intended as an electronic platform controlling a custom microscope.
 
 # Why using a FPGA?
 
-As opposed to most microcontrollers (such as the Arduino), FPGAs can carry on multiple tasks in parallel due to their architecture. While the Arduino is a great solution for simple tasks, it is rapidly overwhelmed when required to process signals rapidly. A good example for such a task - and the original motivation for MicroFPGA - is to pulse in the microsecond range several lasers in a synchronous way. This can be achieved easily for one laser by an Arduino DUE, but becomes impossible with several lasers or requires multiple Arduino boards and synchronization signals. A FPGA can achive this task for many lasers without effort. Finally, the MojoFPGA comes at a comparable price to the Arduinos, making it an excellent choice for cheap integrated electronics in experimental set-ups. 
+As opposed to most microcontrollers (such as the Arduino), FPGAs can carry on multiple tasks in parallel due to their architecture. While the Arduino is a great solution for simple tasks, it is rapidly overwhelmed when required to process signals rapidly. A good example for such a task - and the original motivation for MicroFPGA - is to pulse in the microsecond range several lasers in a synchronous way. This can be achieved easily for one laser by an Arduino DUE, but becomes impossible with several lasers or requires multiple Arduino boards and synchronization signals. A FPGA can achive this task for many lasers without effort. Finally, Alchitry FPGAs are only slightly more expensive than Arduinos, making it an excellent choice for affordable integrated electronics in experimental set-ups. 
 
 # What can MicroFPGA do?
 
@@ -34,4 +34,4 @@ By design, MicroFPGA  offers out of the box several control signals useful in mi
 
 The device adapter needs to be compiled for a specific version of Micro-manager.
 
-MicroFPGA was written by Joran Deschamps, EMBL (2020).
+MicroFPGA was written by Joran Deschamps, EMBL (2020), and was developped on [Alchitry Labs](https://alchitry.com/pages/alchitry-labs).
