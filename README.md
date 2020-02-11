@@ -34,4 +34,6 @@ By design, MicroFPGA  offers out of the box several control signals useful in mi
 
 The device adapter needs to be compiled for a specific version of Micro-manager.
 
+:warning: Make sure to input the correct voltage ranges to the FPGAs (e.g.: max 3.3 V for the camera signal and 1.8 V for the analog pins). :warning:
+
 MicroFPGA was written by Joran Deschamps, EMBL (2020), and was developped on [Alchitry Labs](https://alchitry.com/pages/alchitry-labs).
