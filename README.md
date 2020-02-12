@@ -1,11 +1,10 @@
-### This repository is work in progress, the code has not been fully tested *in situ* yet. 
+### This repository is work in progress. 
 
 Soon:
 
 - Fully tested release with compiled device adapter for MM 1.4 and 2-gamma
 - Python / Java / LabView code
 - Documentation
-
 
 
 # MicroFPGA
