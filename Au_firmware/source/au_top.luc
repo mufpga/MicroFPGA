@@ -79,7 +79,8 @@ module au_top (
       uart_tx tx (#BAUD(1000000), #CLK_FREQ(100000000)); // serial transmitter
       
       reg_interface reg;
-            
+      //reg_interface_debug reg;
+          
       // lasers
       laser_trigger l[NUM_LASERS];
       cam_synchro camsync; // to synchronize all lasers on the same frame counter
@@ -109,7 +110,7 @@ module au_top (
   }
 
   always {
-	  led = 8b0;       
+	   led = 8b0;  
     tx.block = 0; // no blocking
   
     reset_cond.in = ~rst_n; // input raw inverted reset signal
@@ -127,7 +128,7 @@ module au_top (
      
     reg.regIn.drdy = 0;                   // default to not ready
     reg.regIn.data = 32bx;               
-    
+        
     // updates default to 0
     pwmupdate.d = NUM_PWMx{0};
     servo_sig_update.d = NUM_SERVOSx{0};
@@ -178,7 +179,7 @@ module au_top (
           reg.regIn.data = VERSION; // version number      
           reg.regIn.drdy = 1;             
         } else if (reg.regOut.address == ADDRESS_ID) {    // ID   
-          reg.regIn.data = ID; // version number      
+          reg.regIn.data = ID; // id    
           reg.regIn.drdy = 1;             
         } else { // Error
           reg.regIn.data = ERROR_UNKNOW_COMMAND;        

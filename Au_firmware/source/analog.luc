@@ -45,6 +45,7 @@ module analog (
   
     .rst(rst) {
       dff sigs[NUM_AI][16];
+      dff sigs2[NUM_AI][16];
       dff counter[3];
   }}
   
@@ -94,7 +95,8 @@ module analog (
             state.d = state.IDLE;  
           }
     }
-    
-    signals = sigs.q;
+    // use two stacks of flip-flops for metastability purposes
+    sigs2.d = sigs.q;
+    signals = sigs2.q;
   }
 }

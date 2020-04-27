@@ -54,7 +54,7 @@ module laser_trigger (
     }
     
     lasersignal=0;
-    
+  
     case(mod){
       OFF:
         lasersignal = 0;
