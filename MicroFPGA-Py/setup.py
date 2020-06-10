@@ -6,7 +6,7 @@ setup(name='microfpga',
       url='http://github.com/MicroFPGA',
       author='Joran Deschamps',
       author_email='joran.deschamp@embl.de',
-      license='LGPL',
+      license='MIT',
       packages=['microfpga'],
       install_requires=[
           'pyserial',
