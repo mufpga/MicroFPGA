@@ -1,20 +1,6 @@
 from microfpga import signals
 from microfpga import regint
 
-NUM_LASERS = 6
-NUM_TTL = 6
-NUM_PWM = 6
-NUM_SERVOS = 6
-NUM_AI = 8
-
-ADDR_VER = 100
-ADDR_ID = 101
-
-CURR_VER = 2
-
-ID_AU = 79
-ID_CU = 49
-
 class MicroFPGA:
     
     def __init__(self, n_lasers, n_ttls, n_servos, n_pwms, n_ais):
@@ -28,10 +14,10 @@ class MicroFPGA:
         self._ais = []
         if self._serial.is_connected():
             
-            self.version = self._serial.read(ADDR_VER)
-            self.id = self._serial.read(ADDR_ID)
+            self.version = self._serial.read(signals.ADDR_VER)
+            self.id = self._serial.read(signals.ADDR_ID)
                 
-            if (self.version == CURR_VER) and (self.id == ID_AU or self.id == ID_CU):
+            if (self.version == signals.CURR_VER) and (self.id == signals.ID_AU or self.id == signals.ID_CU):
                 # instantiates lasers
                 for i in range(n_lasers):
                     self._lasers.append(signals.LaserTrigger(i, self._serial))
@@ -49,19 +35,19 @@ class MicroFPGA:
                     self._pwms.append(signals.Pwm(i, self._serial))
                     
                 # instantiates lasers
-                if self.id == ID_AU:
+                if self.id == signals.ID_AU:
                     for i in range(n_ais):
                         self._ais.append(signals.Analog(i, self._serial))
             else:
                 self.disconnect()
-                if self.version != CURR_VER:
-                    raise Warning('Wrong version: expected '+str(CURR_VER)+\
+                if self.version != signals.CURR_VER:
+                    raise Warning('Wrong version: expected '+str(signals.CURR_VER)+\
                                   ', got '+str(self.version)+'. The port has been disconnected')
                 
                 
-                if self.id != ID_AU and self.id != ID_CU:
-                    raise Warning('Wrong board id: expected '+str(ID_AU)+\
-                                  ' (Au) or '+str(ID_CU)+' (Cu), got '+str(self.id)+'. The port has been disconnected')
+                if self.id != signals.ID_AU and self.id != signals.ID_CU:
+                    raise Warning('Wrong board id: expected '+str(signals.ID_AU)+\
+                                  ' (Au) or '+str(signals.ID_CU)+' (Cu), got '+str(self.id)+'. The port has been disconnected')
 
     def disconnect(self):
         self._serial.disconnect()
@@ -175,9 +161,9 @@ class MicroFPGA:
             return [-1,-1,-1]
         
     def get_id(self):
-        if self.id == ID_AU:
+        if self.id == signals.ID_AU:
             return 'Au'
-        elif self.id == ID_CU:
+        elif self.id == signals.ID_CU:
             return 'Cu'
         else:
             return 'Unknown' 

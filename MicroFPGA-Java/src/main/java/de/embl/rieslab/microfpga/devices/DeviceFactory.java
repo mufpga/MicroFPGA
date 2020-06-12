@@ -1,14 +1,9 @@
 package de.embl.rieslab.microfpga.devices;
 
+import de.embl.rieslab.microfpga.MicroFPGAController;
 import de.embl.rieslab.microfpga.regint.RegisterInterface;
 
 public class DeviceFactory {
-
-	public final static int MAX_TTL = 6;
-	public final static int MAX_PWM = 6;
-	public final static int MAX_LASER = 6;
-	public final static int MAX_SERVO = 6;
-	public final static int MAX_AI = 8;
 	
 	private final RegisterInterface regint_;
 	
@@ -61,22 +56,22 @@ public class DeviceFactory {
 	}
 
 	public int getNumTTLLeft() {
-		return MAX_TTL-counterTTLs_;
+		return MicroFPGAController.MAX_TTL-counterTTLs_;
 	}
 
 	public int getNumPWMLeft() {
-		return MAX_PWM-counterPWMs_;
+		return MicroFPGAController.MAX_PWM-counterPWMs_;
 	}
 
 	public int getNumLaserLeft() {
-		return MAX_LASER-counterLasers_;
+		return MicroFPGAController.MAX_LASER-counterLasers_;
 	}
 
 	public int getNumServoLeft() {
-		return MAX_SERVO-counterServos_;
+		return MicroFPGAController.MAX_SERVO-counterServos_;
 	}
 
 	public int getNumAILeft() {
-		return MAX_AI-counterAIs_;
+		return MicroFPGAController.MAX_AI-counterAIs_;
 	}
 }

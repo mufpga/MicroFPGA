@@ -1,5 +1,6 @@
 package de.embl.rieslab.microfpga.devices;
 
+import de.embl.rieslab.microfpga.MicroFPGAController;
 import de.embl.rieslab.microfpga.regint.RegisterInterface;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
@@ -78,8 +79,6 @@ public class LaserTrigger {
 		public static final int MODE_FALLING = 3;
 		public static final int MODE_CAMERA = 4;
 		
-		public static final int ADDR_LASER_MODES = 0;
-		
 		protected Mode(int id, RegisterInterface regint) {
 			super(id, Direction.OUTPUT, regint);
 		}
@@ -91,7 +90,7 @@ public class LaserTrigger {
 
 		@Override
 		public int getBaseAddress() {
-			return ADDR_LASER_MODES;
+			return MicroFPGAController.ADDR_MODE;
 		}
 	}
 	
@@ -99,8 +98,6 @@ public class LaserTrigger {
 
 		public static final int MAX = 65535;
 		public static final int MIN = 0;
-		
-		public static final int ADDR_LASER_DURA = 10;
 		
 		protected Duration(int id, RegisterInterface regint) {
 			super(id, Direction.OUTPUT, regint);
@@ -113,7 +110,7 @@ public class LaserTrigger {
 
 		@Override
 		public int getBaseAddress() {
-			return ADDR_LASER_DURA;
+			return MicroFPGAController.ADDR_DURA;
 		}
 	}
 	
@@ -121,8 +118,6 @@ public class LaserTrigger {
 
 		public static final int MAX = 65535;
 		public static final int MIN = 0;
-		
-		public static final int ADDR_LASER_SEQ = 20;
 		
 		protected Sequence(int id, RegisterInterface regint) {
 			super(id, Direction.OUTPUT, regint);
@@ -135,7 +130,7 @@ public class LaserTrigger {
 
 		@Override
 		public int getBaseAddress() {
-			return ADDR_LASER_SEQ;
+			return MicroFPGAController.ADDR_SEQ;
 		}
 	}
 }

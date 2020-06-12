@@ -1,10 +1,9 @@
 package de.embl.rieslab.microfpga.devices;
 
+import de.embl.rieslab.microfpga.MicroFPGAController;
 import de.embl.rieslab.microfpga.regint.RegisterInterface;
 
 public class PWM extends Signal{
-
-	public static final int ADDR_PWM = 50;
 	
 	public static final int MAX = 255;
 	public static final int MIN = 0;
@@ -20,6 +19,6 @@ public class PWM extends Signal{
 
 	@Override
 	public int getBaseAddress() {
-		return ADDR_PWM;
+		return MicroFPGAController.ADDR_PWM;
 	}
 }

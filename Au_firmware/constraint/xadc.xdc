@@ -33,3 +33,6 @@ set_property PACKAGE_PIN B1 [get_ports {vn6}]
 # AD15P/AD15N -> B2/B3 ?!
 set_property PACKAGE_PIN E2 [get_ports {vp7}]
 set_property PACKAGE_PIN D1 [get_ports {vn7}]
+
+# to change IOSTANDARD to LVCMOS33 or LVCMOS18
+# set_property IOSTANDARD LVCMOS33 [get_ports {ttl0}]
