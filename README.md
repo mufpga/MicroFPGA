@@ -24,7 +24,7 @@ By design, MicroFPGA  offers out of the box several control signals useful in mi
 | Laser triggering (Au/Cu) | Using a camera read-out signal, multiple lasers can be triggered by a TTL (On/Off, pulsing with us resolution, follow the camera) |            Laser triggering             |
 |       TTL (Au/Cu)        |                        On/Off signal                         |              Flip-mirrors               |
 |      Servos (Au/Cu)      |                   1 ms - 2 ms servo signal                   |     Filter-wheel, moveable elements     |
-|       PWM (Au/Cu)        |                            0-100%                            | Wiht a low-pass circuit: AOM %, laser % |
+|       PWM (Au/Cu)        |                            0-100%                            | With a low-pass circuit: AOM %, laser % |
 |   Analog read-out (Au)   |                  8 analog read-out channels                  |            Sensor read-outs             |
 
 # Micro-manager

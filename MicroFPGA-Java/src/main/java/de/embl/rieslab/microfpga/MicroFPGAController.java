@@ -14,7 +14,20 @@ import jssc.SerialPortTimeoutException;
 
 public class MicroFPGAController {
 
-
+	public final static int MAX_TTL = 10;
+	public final static int MAX_PWM = 10;
+	public final static int MAX_LASER = 10;
+	public final static int MAX_SERVO = 10;
+	public final static int MAX_AI = 8;
+	
+	public final static int ADDR_MODE = 0;
+	public static final int ADDR_DURA = ADDR_MODE+MAX_LASER;
+	public static final int ADDR_SEQ = ADDR_DURA+MAX_LASER;
+	public static final int ADDR_TTL = ADDR_SEQ+MAX_LASER;
+	public static final int ADDR_SERVO = ADDR_TTL+MAX_TTL;
+	public static final int ADDR_PWM = ADDR_SERVO+MAX_SERVO;
+	public static final int ADDR_ANALOG_INPUT = ADDR_PWM+MAX_PWM;
+	
 	public static final int ADDR_VERSION = 100;
 	public static final int ADDR_ID = 101;
 	
