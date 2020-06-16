@@ -34,19 +34,19 @@ const int g_version = 2;
 const int g_id_au = 79;
 const int g_id_cu = 29;
 
-const int g_maxlasers = 6;
+const int g_maxlasers = 10;
 const int g_maxanaloginput = 8;
-const int g_maxttl = 6;
-const int g_maxpwm = 6;
-const int g_maxservos = 6;
+const int g_maxttl = 10;
+const int g_maxpwm = 10;
+const int g_maxservos = 10;
 
 const int g_offsetaddressLaserMode = 0;
-const int g_offsetaddressLaserDuration = 10;
-const int g_offsetaddressLaserSequence = 20;
-const int g_offsetaddressTTL = 30;
-const int g_offsetaddressServo = 40;
-const int g_offsetaddressPWM = 50;
-const int g_offsetaddressAnalogInput = 60;
+const int g_offsetaddressLaserDuration = g_offsetaddressLaserMode+g_maxlasers;
+const int g_offsetaddressLaserSequence = g_offsetaddressLaserDuration+g_maxlasers;
+const int g_offsetaddressTTL = g_offsetaddressLaserSequence+g_maxlasers;
+const int g_offsetaddressServo = g_offsetaddressTTL+g_maxttl;
+const int g_offsetaddressPWM = g_offsetaddressServo+g_maxpwm;
+const int g_offsetaddressAnalogInput = g_offsetaddressPWM+g_maxpwm;
 
 const int g_address_version = 100;
 const int g_address_id = 101;
@@ -358,7 +358,7 @@ int MicroFPGAHub::ReadAnswer(long& ans){
 	}
 
 	ans = tmp;
-
+	
 	// If unknown command answer
 	if(ans == ERR_COMMAND_UNKNOWN){
 		return ERR_COMMAND_UNKNOWN;
@@ -1046,7 +1046,7 @@ void PWM::GetName(char* name) const
 int PWM::Initialize()
 {
 	// Parent ID display	
-	MicroFPGA* hub = static_cast<MicroFPGA*>(GetParentHub());
+	MicroFPGAHub* hub = static_cast<MicroFPGAHub*>(GetParentHub());
 	if (!hub) {
 		return ERR_NO_PORT_SET;
 	}
@@ -1139,7 +1139,7 @@ int PWM::OnState(MM::PropertyBase* pProp, MM::ActionType pAct, long channel)
 {
 	if (pAct == MM::BeforeGet)
 	{
-		MicroFPGA* hub = static_cast<MicroFPGA*>(GetParentHub());
+		MicroFPGAHub* hub = static_cast<MicroFPGAHub*>(GetParentHub());
 		if (!hub){
 			return ERR_NO_PORT_SET;
 		}
