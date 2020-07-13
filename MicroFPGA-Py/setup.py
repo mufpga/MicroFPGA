@@ -9,6 +9,7 @@ setup(name='microfpga',
       license='MIT',
       packages=['microfpga'],
       install_requires=[
-          'pyserial',
+          'serial',
+          'pyserial'
       ],
       zip_safe=False)
