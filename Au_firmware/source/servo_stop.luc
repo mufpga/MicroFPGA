@@ -1,7 +1,6 @@
 /******************************************************************************
-   This module takes a servo signal input (PWM) and shuts it down after each
-   update 10 seconds later. The goal is to avoid vibrations from the servos on 
-   the optical table.
+   This module takes a servo signal input (PWM) and shuts it down 10 seconds 
+   later in order to avoid vibrations on the optical table.
 */
 
 module servo_stop (
