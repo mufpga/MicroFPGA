@@ -1,12 +1,15 @@
-# Understanding analog pin mapping
+# Analog pins mapping
 
-### ADC
+Here is a brief overview of the analog pins mapping, from the FPGA ADC schematic to the MicroFPGA channels numbers.
 
-page 38: https://www.xilinx.com/support/documentation/user_guides/ug480_7Series_XADC.pdf
+### Resources
 
-page 1, 2 and 3: https://cdn.shopify.com/s/files/1/2702/8766/files/alchitry_au_sch.pdf?1474573937723901827
+- The [manual](https://www.xilinx.com/support/documentation/user_guides/ug480_7Series_XADC.pdf) for the Xilinx 7 series FPGA 12 bits ADC has a full description of the Au FPGA ADC. In particular, on page 38, the hexadecimal addresses are indicated (second column of the table).
+- In the [Au FPGA schematic](https://cdn.shopify.com/s/files/1/2702/8766/files/alchitry_au_sch.pdf?1474573937723901827), the auxiliary analog channels that are not used can be found on Bank 35 (see page 1): ADXP/ADXN where X is the channel number. On page 2, the wiring of the banks are shown. Finally, on page 3, the dedicated analog channel (vp/vn) are indicated. 
+- The [xadc constraint file](https://github.com/jdeschamps/MicroFPGA/blob/master/Au_firmware/constraint/xadc.xdc) attributes signals to specific pins.
+- The [analog Lucid module](https://github.com/jdeschamps/MicroFPGA/blob/master/Au_firmware/source/analog.luc) maps the signals (xadc constraint) to the auxiliary channels (ADC).
 
-xadc.xdc
+Here is a summary table:
 
 | **Channel** | **address <br />(hex)** | **address** | MicroFPGA channel | Pin (physical) | Pin (Br)    |
 | ----------- | :---------------------: | :---------: | :---------------: | -------------- | :---------- |
@@ -28,3 +31,6 @@ xadc.xdc
 | Vaux 0      |           10h           |      -      |         -         | -              | -           |
 | VP/VN       |           03h           |      3      |         -         | H8/J7          | BankD 31/30 |
 
+The available auxiliary channels are indicated in bold. The second column is the hexadecimal addresses from the ADC manual. The "MicroFPGA channel" indicates the numbering of the MicroFPGA channels, while the physical pins (Au schematic, page 1) and the corresponding bank pin (Au schematic, page 2) are stated in the last two columns.
+
+Note that the dedicated analog channel is currently not used in MicroFPGA.
