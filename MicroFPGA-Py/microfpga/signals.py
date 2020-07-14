@@ -43,9 +43,12 @@ def format_sequence(string):
 class Signal(ABC):
     
     def __init__(self, channel_id: int, serial_com: regint.RegisterInterface, output: bool = True):
-        self.channel_id = channel_id
-        self.output = output
-        self._serial_com = serial_com
+        if channel_id < self.get_num_signal():
+            self.channel_id = channel_id
+            self.output = output
+            self._serial_com = serial_com
+        else:
+            raise Exception('Index exceed maximum number of '+self.get_name()+' signals.')
     
     @abstractmethod
     def get_address(self):
@@ -53,6 +56,14 @@ class Signal(ABC):
        
     @abstractmethod 
     def is_allowed(self, value):
+        pass
+    
+    @abstractmethod 
+    def get_num_signal(self):
+        pass
+    
+    @abstractmethod 
+    def get_name(self):
         pass
     
     def set_state(self, value):
@@ -76,6 +87,12 @@ class Ttl(Signal):
     
     def is_allowed(self, value):
         return (value >= 0) and (value <= MAX_TTL)
+
+    def get_num_signal(self):
+        return NUM_TTL
+    
+    def get_name(self):
+        return 'TTL'
     
 class Pwm(Signal):
     
@@ -87,6 +104,12 @@ class Pwm(Signal):
     
     def is_allowed(self, value):
         return (value >= 0) and (value <= MAX_PWM)
+
+    def get_num_signal(self):
+        return NUM_PWM
+    
+    def get_name(self):
+        return 'PWM'
     
 class Servo(Signal):
     
@@ -98,6 +121,12 @@ class Servo(Signal):
     
     def is_allowed(self, value):
         return (value >= 0) and (value <= MAX_SERVO)
+
+    def get_num_signal(self):
+        return NUM_SERVOS
+    
+    def get_name(self):
+        return 'Servos'
     
 class Analog(Signal):
     
@@ -109,6 +138,12 @@ class Analog(Signal):
     
     def is_allowed(self, value):
         return False
+
+    def get_num_signal(self):
+        return NUM_AI
+    
+    def get_name(self):
+        return 'AI'
     
 class _Mode(Signal):
     
@@ -121,6 +156,12 @@ class _Mode(Signal):
     def is_allowed(self, value):
         return (value >= 0) and (value <= MAX_MODE)
 
+    def get_num_signal(self):
+        return NUM_LASERS
+    
+    def get_name(self):
+        return 'Laser mode'
+
 class _Duration(Signal):
     
     def __init__(self, channel_id:int, serial_com:regint.RegisterInterface):
@@ -131,6 +172,12 @@ class _Duration(Signal):
     
     def is_allowed(self, value):
         return (value >= 0) and (value <= MAX_DUR)
+
+    def get_num_signal(self):
+        return NUM_LASERS
+    
+    def get_name(self):
+        return 'Laser duration'
     
 class _Sequence(Signal):
     
@@ -142,6 +189,12 @@ class _Sequence(Signal):
     
     def is_allowed(self, value):
         return (value >= 0) and (value <= MAX_SEQ)
+    
+    def get_num_signal(self):
+        return NUM_LASERS
+    
+    def get_name(self):
+        return 'Laser sequence'
     
     
 class LaserTrigger:
