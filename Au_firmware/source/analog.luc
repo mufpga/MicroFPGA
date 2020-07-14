@@ -32,8 +32,11 @@ module analog (
     output signals[8][16]
   ) {
   
-  // see Xilinx 7 Series FPGAs XADC documentation, page 38
+  // for addresses, see Xilinx 7 Series FPGAs XADC documentation, page 38
+  // signals defined in xadc.xdc
+  // channels: vaux15, vaux14, vaux13, vaux12, vaux7, vaux6, vaux5, vaux4
   // addresses: 6h1f, 6h1e, 6h1d, 6h1c, 6h17, 6h16, 6h15, 6h14
+  // pins (Br): B3/B2, B6/B5, B27/B28, B21/B20, B48/B49, B45/B46, B18/B17, B24/B23
   const ADDR = {31,30,29,28,23,22,21,20};
   const NUM_AI = 8;
   
