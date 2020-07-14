@@ -1,19 +1,6 @@
-## Default layout Au+Br
+# Default layout Au+Br
 
-The following table represent the output pins of the Au FPGA used with the [Br breaking board](https://alchitry.com/collections/all/products/alchitry-br). You can find the reference sheet of the Br board on Alchitry website.
-
-S: servomotor outputs
-TTL: ttl outputs
-AIXP: positive pole of the analog input X
-AIXN: negative pole of the analog input X
-P: pwm outputs
-L: laser trigger outputs
-Cam: camera trigger input
-GND: ground
-R: raw +5 V 
-+V: 3.3 V
--: vacant 1.8 V I/O pins 
-x: vacant 3.3 V I/O pins
+The following table represent the output pins of the Au FPGA used with the [Br breaking board](https://alchitry.com/collections/all/products/alchitry-br). You can find the reference sheet of the Br board in the previous link.
 
 The pin numbers are indicated in between parentheses:
 
@@ -45,5 +32,22 @@ The pin numbers are indicated in between parentheses:
 |  GND   |  x   |  x   | + (8)  | + (11) |  x   |  x   |    x    |  x   |
 |   +V   |  x   |  x   | + (9)  | + (12) |  x   |  x   |    x    |  x   |
 
-Note that because the analog input pins run at 1.8 V (I/O standard LVCMOS18), all pins connected to bank 35 (see [Au design](https://alchitry.com/products/alchitry-au-fpga-development-board)) have to be configured with the same I/O standard. They are indicated here with "-" and are therefore not available to interact with hardware expecting a 3.3 V or 5 V digital logic. If you are not using the analog inputs, they could in theory be removed from the firmware and other signals attributed to the pins with 3.3 V standard.
+**S**: servomotor outputs
+**TTL**: ttl outputs
+**AIXP**: positive pole of the analog input X
+**AIXN**: negative pole of the analog input X
+**P**: PWMoutputs
+**L**: laser trigger outputs
+**Cam**: camera trigger input
+**GND**: ground
+**R**: raw +5 V 
+**+V**: 3.3 V
+**-**: vacant 1.8 V I/O pins 
+**x**: vacant 3.3 V I/O pins
+
+Note that because the analog input pins run at 1.8 V (I/O standard LVCMOS18), all pins connected to bank 35 (see [Au design](https://alchitry.com/products/alchitry-au-fpga-development-board)) have to be configured with the same I/O standard. They are indicated here with "-" and are therefore will not work with hardware expecting a 3.3 V or 5 V digital logic.
+
+Pins are defined in the [user constraint file](https://github.com/jdeschamps/MicroFPGA/blob/master/Au_firmware/constraint/user.acf).
+
+# Default layout Cu+Br
 
