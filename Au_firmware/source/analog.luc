@@ -1,10 +1,10 @@
 /******************************************************************************
-  This modules reads the 8 aux analog channels available on the Au in a loop
+  This modules reads the 9 aux analog channels available on the Au in a loop
   and updates the output signal. First it waits for the conversion signal to 
   go up, then in the READ_NEXT state it waits for the drdy signal to be up, 
   stores the value in a dff array and increment the address.
-  
-  The vp/vn analog channel is not used.
+   
+  Vp/Vn is currently unused.
 */
 
 
@@ -32,21 +32,19 @@ module analog (
     output signals[8][16]
   ) {
   
-  // addresses of vauxp4/vauxp4, vauxp12/vauxp12, vauxp5/vauxp5, 
-  // vauxp13/vauxp13, vauxp6/vauxp6, vauxp14/vauxp14, vauxp7/vauxp7, 
-  // vauxp15/vauxp15
-  // see Xilinx XADC documentation
-  const ADDR = {6h14, 6h1c, 6h15, 6h1d, 6h16, 6h1e, 6h17, 6h1f};
+  // see Xilinx 7 Series FPGAs XADC documentation, page 38
+  // addresses: 6h1f, 6h1e, 6h1d, 6h1c, 6h17, 6h16, 6h15, 6h14
+  const ADDR = {31,30,29,28,23,22,21,20};
   const NUM_AI = 8;
   
   .clk(clk){ 
  
-    fsm state = {IDLE, READ_NEXT};
+    //fsm state = {IDLE, READ_NEXT};
   
     .rst(rst) {
       dff sigs[NUM_AI][16];
       dff sigs2[NUM_AI][16];
-      dff counter[3];
+      dff counter[4];
   }}
   
   xadc_wiz_0 xadc;
@@ -56,18 +54,18 @@ module analog (
     xadc.vn_in = vn;
     xadc.vauxp4 = vp0;
     xadc.vauxn4 = vn0;
-    xadc.vauxp12 = vp1;
-    xadc.vauxn12 = vn1;
-    xadc.vauxp5 = vp2;
-    xadc.vauxn5 = vn2;
-    xadc.vauxp13 = vp3;
-    xadc.vauxn13 = vn3;
-    xadc.vauxp6 = vp4;
-    xadc.vauxn6 = vn4;
-    xadc.vauxp14 = vp5;
-    xadc.vauxn14 = vn5;
-    xadc.vauxp7 = vp6;
-    xadc.vauxn7 = vn6;
+    xadc.vauxp5 = vp1;
+    xadc.vauxn5 = vn1;
+    xadc.vauxp6 = vp2;
+    xadc.vauxn6 = vn2;
+    xadc.vauxp7 = vp3;
+    xadc.vauxn7 = vn3;
+    xadc.vauxp12 = vp4;
+    xadc.vauxn12 = vn4;
+    xadc.vauxp13 = vp5;
+    xadc.vauxn13 = vn5;
+    xadc.vauxp14 = vp6;
+    xadc.vauxn14 = vn6;
     xadc.vauxp15 = vp7;
     xadc.vauxn15 = vn7;
     
@@ -76,25 +74,19 @@ module analog (
     xadc.di_in = 0; 
     xadc.dwe_in = 0; // only perform reads
     
-    xadc.daddr_in = ADDR[NUM_AI-1-counter.q]; // use array to hold address
-    
-    case (state.q) {
-      state.IDLE:
-          if(xadc.eoc_out){
-            state.d = state.READ_NEXT;
-            counter.d = 0; // restart counter
-          }
-     
-      state.READ_NEXT:
-          if(xadc.drdy_out){ // if ready to be read
-            sigs.d[counter.q] = xadc.do_out; // read signal
-            counter.d = counter.q+1; // increase counter
-          }
-        
-          if(&counter.q){ // if all addresses read, return to IDLE state
-            state.d = state.IDLE;  
-          }
+    xadc.daddr_in = ADDR[counter.q]; // use array to hold address
+    sigs.d = sigs.q;
+    counter.d = counter.q;    
+      
+    if(xadc.drdy_out){ // if ready to be read
+      sigs.d[counter.q] = xadc.do_out; // read signal
+      counter.d = counter.q+1; // increase counter
     }
+    
+    if(counter.q == NUM_AI){
+      counter.d = 0;
+    }
+    
     // use two stacks of flip-flops for metastability purposes
     sigs2.d = sigs.q;
     signals = sigs2.q;
