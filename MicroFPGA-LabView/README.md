@@ -1,0 +1,1 @@
+The LabView project was written by Christian Kieser (EMBL, Electronic Workshop). It is provided as an example and will not be maintained by lack of LabView license. 
