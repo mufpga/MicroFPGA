@@ -36,8 +36,8 @@ const int g_id_cu = 29;
 
 const int g_maxlasers = 10;
 const int g_maxanaloginput = 8;
-const int g_maxttl = 10;
-const int g_maxpwm = 10;
+const int g_maxttl = 5;
+const int g_maxpwm = 5;
 const int g_maxservos = 10;
 
 const int g_offsetaddressLaserMode = 0;
