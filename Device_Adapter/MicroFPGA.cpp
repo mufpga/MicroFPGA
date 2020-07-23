@@ -45,7 +45,7 @@ const int g_offsetaddressLaserDuration = g_offsetaddressLaserMode+g_maxlasers;
 const int g_offsetaddressLaserSequence = g_offsetaddressLaserDuration+g_maxlasers;
 const int g_offsetaddressTTL = g_offsetaddressLaserSequence+g_maxlasers;
 const int g_offsetaddressServo = g_offsetaddressTTL+g_maxttl;
-const int g_offsetaddressPWM = g_offsetaddressServo+g_maxpwm;
+const int g_offsetaddressPWM = g_offsetaddressServo+g_maxservos;
 const int g_offsetaddressAnalogInput = g_offsetaddressPWM+g_maxpwm;
 
 const int g_address_version = 100;
