@@ -20,8 +20,6 @@ module au_top (
     output laser5,
     output laser6,
     output laser7,
-    output laser8,
-    output laser9,
     output ttl0,
     output ttl1,
     output ttl2,
@@ -34,9 +32,6 @@ module au_top (
     output servo4,
     output servo5,
     output servo6,
-    output servo7,
-    output servo8,
-    output servo9,
     output pwm0,
     output pwm1,
     output pwm2,
@@ -63,10 +58,10 @@ module au_top (
   ) {
    
   // number of signals
-  const NUM_LASERS = 10;
+  const NUM_LASERS = 8;
   const NUM_TTL = 5;
   const NUM_PWM = 5;
-  const NUM_SERVOS = 10;
+  const NUM_SERVOS = 7;
   const NUM_ANALOG = 8;
   
   // base addresses for each signal type
@@ -222,8 +217,6 @@ module au_top (
     laser5 = l.lasersignal[5];
     laser6 = l.lasersignal[6];
     laser7 = l.lasersignal[7];
-    laser8 = l.lasersignal[8];
-    laser9 = l.lasersignal[9];
     
     //////////////// TTLs
     ttl0 = ttl.q[0];
@@ -243,9 +236,6 @@ module au_top (
     servo4 = servo_sig.signal_out[4];
     servo5 = servo_sig.signal_out[5];
     servo6 = servo_sig.signal_out[6];
-    servo7 = servo_sig.signal_out[7];
-    servo8 = servo_sig.signal_out[8];
-    servo9 = servo_sig.signal_out[9];
     
     //////////////// PWM
     pulsewm.update = pwmupdate.q;
