@@ -34,11 +34,11 @@ const int g_version = 2;
 const int g_id_au = 79;
 const int g_id_cu = 29;
 
-const int g_maxlasers = 10;
+const int g_maxlasers = 8;
 const int g_maxanaloginput = 8;
 const int g_maxttl = 5;
 const int g_maxpwm = 5;
-const int g_maxservos = 10;
+const int g_maxservos = 7;
 
 const int g_offsetaddressLaserMode = 0;
 const int g_offsetaddressLaserDuration = g_offsetaddressLaserMode+g_maxlasers;
