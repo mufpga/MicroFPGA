@@ -13,14 +13,9 @@ pin laser9 C42;
 
 pin ttl0 A27;
 pin ttl1 A28;
-pin ttl2 C40;
-pin ttl3 C39;
-pin ttl4 C11;
-pin ttl5 C12;
-pin ttl6 C37;
-pin ttl7 C36;
-pin ttl8 C14;
-pin ttl9 C15;
+pin ttl2 A9;
+pin ttl3 A8;
+pin ttl4 D12;
 
 pin servo0 A2;
 pin servo1 A3;
@@ -33,13 +28,8 @@ pin servo7 A5;
 pin servo8 A42;
 pin servo9 A43;
 
-pin pwm0 C34;
-pin pwm1 C33;
-pin pwm2 C17;
-pin pwm3 C18;
-pin pwm4 C31;
-pin pwm5 C30;
-pin pwm6 C20;
-pin pwm7 C21;
-pin pwm8 C28;
-pin pwm9 C27;
+pin pwm0 D43;
+pin pwm1 D42;
+pin pwm2 D8;
+pin pwm3 D9;
+pin pwm4 D11;

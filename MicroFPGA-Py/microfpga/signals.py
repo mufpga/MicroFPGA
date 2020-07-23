@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from microfpga import regint
 
 NUM_LASERS = 10
-NUM_TTL = 10
-NUM_PWM = 10
+NUM_TTL = 5
+NUM_PWM = 5
 NUM_SERVOS = 10
 NUM_AI = 8
 
