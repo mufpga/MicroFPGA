@@ -1,6 +1,15 @@
 import microfpga.controller as ctrl
 import microfpga.signals as sgnl
 
+""" Note that the communication will only work if the FTDI driver has been
+    installed for the FPGA interface 1 and that the latter appears as
+    a COM port (see links).
+ 
+    links:    
+    https://alchitry.com/pages/alchitry-labs
+    https://github.com/jdeschamps/MicroFPGA/blob/master/tutorials/serial_communication_win.md
+"""
+
 # creates a MicroFPGA controller
 num_lasers = 3;
 num_ttl = 2;
