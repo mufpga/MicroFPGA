@@ -16,7 +16,7 @@
    1. Click on the link to download and install Alchitry Labs.
    2. Download [Zadig](https://zadig.akeo.ie/).
    3. Follow the instructions ("Installing WinUSB" section) to configure the FPGA interface 0 with the WinUSB driver using Zadig.
-   4. Install Vivado or IceCube2 depending on your FPGA (Au or Cu), the links are at the [bottom of the page]((https://alchitry.com/pages/alchitry-labs)). You will need to register an account with Xilinx to install Vivado.
+   4. Install Vivado or IceCube2 depending on your FPGA (Au or Cu), the links are at the [bottom of the page]((https://alchitry.com/pages/alchitry-labs)). You will need to register an account with Xilinx to install Vivado. Note that the installation folders will be quite big.
 
 4. Start Alchitry Labs and in the "Settings" menu, set the location of the compiling tools (Vivado or IceCube2).
 
