@@ -7,9 +7,13 @@ import de.embl.rieslab.microfpga.devices.LaserTrigger;
 import de.embl.rieslab.microfpga.regint.ListPorts;
 
 /**
- * Note that the communication will only work if the FTDI drivers have been
- * installed for both channels of the FPGA and that the latter appears as
- * a COMport.
+ * Note that the communication will only work if the FTDI driver has been
+ * installed for the FPGA interface 1 and that the latter appears as
+ * a COM port (see links).
+ * 
+ * links:
+ * https://alchitry.com/pages/alchitry-labs
+ * https://github.com/jdeschamps/MicroFPGA/blob/master/tutorials/serial_communication_win.md
  * 
  * @author Joran Deschamps
  *
