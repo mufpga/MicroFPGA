@@ -20,18 +20,11 @@ module au_top (
     output laser5,
     output laser6,
     output laser7,
-    output laser8,
-    output laser9,
     output ttl0,
     output ttl1,
     output ttl2,
     output ttl3,
     output ttl4,
-    output ttl5,
-    output ttl6,
-    output ttl7,
-    output ttl8,
-    output ttl9,
     output servo0,
     output servo1,
     output servo2,
@@ -39,19 +32,11 @@ module au_top (
     output servo4,
     output servo5,
     output servo6,
-    output servo7,
-    output servo8,
-    output servo9,
     output pwm0,
     output pwm1,
     output pwm2,
     output pwm3,
     output pwm4,
-    output pwm5,
-    output pwm6,
-    output pwm7,
-    output pwm8,
-    output pwm9,
     input vp0,
     input vn0,
     input vp1,
@@ -73,10 +58,10 @@ module au_top (
   ) {
    
   // number of signals
-  const NUM_LASERS = 10;
-  const NUM_TTL = 10;
-  const NUM_PWM = 10;
-  const NUM_SERVOS = 10;
+  const NUM_LASERS = 8;
+  const NUM_TTL = 5;
+  const NUM_PWM = 5;
+  const NUM_SERVOS = 7;
   const NUM_ANALOG = 8;
   
   // base addresses for each signal type
@@ -232,8 +217,6 @@ module au_top (
     laser5 = l.lasersignal[5];
     laser6 = l.lasersignal[6];
     laser7 = l.lasersignal[7];
-    laser8 = l.lasersignal[8];
-    laser9 = l.lasersignal[9];
     
     //////////////// TTLs
     ttl0 = ttl.q[0];
@@ -241,11 +224,6 @@ module au_top (
     ttl2 = ttl.q[2];
     ttl3 = ttl.q[3];
     ttl4 = ttl.q[4];
-    ttl5 = ttl.q[5];
-    ttl6 = ttl.q[6];
-    ttl7 = ttl.q[7];
-    ttl8 = ttl.q[8];
-    ttl9 = ttl.q[9];
     
     //////////////// Servos
     servo_controller.position = position.q;
@@ -258,9 +236,6 @@ module au_top (
     servo4 = servo_sig.signal_out[4];
     servo5 = servo_sig.signal_out[5];
     servo6 = servo_sig.signal_out[6];
-    servo7 = servo_sig.signal_out[7];
-    servo8 = servo_sig.signal_out[8];
-    servo9 = servo_sig.signal_out[9];
     
     //////////////// PWM
     pulsewm.update = pwmupdate.q;
@@ -270,11 +245,6 @@ module au_top (
     pwm2 = pulsewm.pulse[2];
     pwm3 = pulsewm.pulse[3];
     pwm4 = pulsewm.pulse[4];
-    pwm5 = pulsewm.pulse[5];
-    pwm6 = pulsewm.pulse[6];
-    pwm7 = pulsewm.pulse[7];
-    pwm8 = pulsewm.pulse[8];
-    pwm9 = pulsewm.pulse[9];
     
     //////////////// Analog read
     analog_read.vp0 = vp0;

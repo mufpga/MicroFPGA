@@ -14,10 +14,10 @@ import jssc.SerialPortTimeoutException;
 
 public class MicroFPGAController {
 
-	public final static int MAX_TTL = 10;
-	public final static int MAX_PWM = 10;
-	public final static int MAX_LASER = 10;
-	public final static int MAX_SERVO = 10;
+	public final static int MAX_TTL = 5;
+	public final static int MAX_PWM = 5;
+	public final static int MAX_LASER = 8;
+	public final static int MAX_SERVO = 7;
 	public final static int MAX_AI = 8;
 	
 	public final static int ADDR_MODE = 0;
