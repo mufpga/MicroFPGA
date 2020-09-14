@@ -1,18 +1,20 @@
 # Register interface
 
-The communication interface is based on the [Mojo Lucid tutorial](https://alchitry.com/blogs/tutorials/register-interface) from Alchitry. Each [MicroFPGA signal](microfpga.md) has an address used for reading/writing its value:
+The communication interface is based on the [Register interface tutorial](https://alchitry.com/blogs/tutorials/register-interface) from Alchitry. Each [MicroFPGA signal](microfpga.md) has an address used for reading/writing its value.
 
-|           Parameter           |         Address          |        Values        |
-| :---------------------------: | :----------------------: | :------------------: |
-|          Laser mode           |   laser number (0-10)    |         0-4          |
-|        Laser duration         | 10 + laser number (0-10) |       0-65535        |
-|        Laser sequence         | 20 + laser number (0-10) |       0-65535        |
-|           TTL state           |  30 + TTL number (0-10)  |         0-1          |
-|        Servo position         | 40 + servo number (0-10) |       0-65535        |
-|              PWM              |  50 + PWM number (0-10)  |        0-255         |
-| Analog signal <br>(READ only) | 60 + Analog number (0-8) | 0-65535 (READ only)  |
-|    Version <br>(READ only)    |           100            |    2 (READ only)     |
-|      ID<br />(READ only)      |           101            | 49 or 79 (READ only) |
+For 8 lasers, 5 TTL, 7 servomotors, 5 PWM:
+
+|           Parameter           |         Address         |        Values        |
+| :---------------------------: | :---------------------: | :------------------: |
+|          Laser mode           |   laser number (0-7)    |         0-4          |
+|        Laser duration         |  8+ laser number (0-7)  |       0-65535        |
+|        Laser sequence         | 16+ laser number (0-7)  |       0-65535        |
+|           TTL state           |  24+ TTL number (0-4)   |         0-1          |
+|        Servo position         | 29+ servo number (0-6)  |       0-65535        |
+|              PWM              |  36+ PWM number (0-4)   |        0-255         |
+| Analog signal <br>(READ only) | 41+ Analog number (0-7) | 0-65535 (READ only)  |
+|    Version <br>(READ only)    |           100           |    2 (READ only)     |
+|      ID<br />(READ only)      |           101           | 49 or 79 (READ only) |
 
 The addresses are defined in the [top file of the Alchitry Labs project](https://github.com/jdeschamps/MicroFPGA/blob/master/Au_firmware/source/au_top.luc). A read request is answered by 4 bytes representing the queried value. Note that unknown addresses will cause the FPGA to answer **11206655** (error code).
 
