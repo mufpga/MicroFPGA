@@ -66,12 +66,12 @@ module au_top (
   
   // base addresses for each signal type
   const ADDR_MODE = 0; 
-  const ADDR_DUR = NUM_LASERS; // 10
-  const ADDR_SEQ = ADDR_DUR+NUM_LASERS; // 20
-  const ADDR_TTL = ADDR_SEQ+NUM_LASERS; // 30
-  const ADDR_SERVOS = ADDR_TTL+NUM_TTL; // 40
-  const ADDR_PWM = ADDR_SERVOS+NUM_SERVOS; // 50
-  const ADDR_AI = ADDR_PWM+NUM_PWM; // 60
+  const ADDR_DUR = NUM_LASERS; 
+  const ADDR_SEQ = ADDR_DUR+NUM_LASERS; 
+  const ADDR_TTL = ADDR_SEQ+NUM_LASERS; 
+  const ADDR_SERVOS = ADDR_TTL+NUM_TTL; 
+  const ADDR_PWM = ADDR_SERVOS+NUM_SERVOS; 
+  const ADDR_AI = ADDR_PWM+NUM_PWM; 
 
   const ADDR_VERSION = 100;
   const ADDR_ID = 101;
