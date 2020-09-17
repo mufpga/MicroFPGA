@@ -4,6 +4,10 @@ import microfpga.signals as sgnl
 """ Note that the communication will only work if the FTDI driver has been
     installed for the FPGA interface 1 and that the latter appears as
     a COM port (see links).
+    
+    The library requires the following packages:
+    serial
+    pyserial
  
     links:    
     https://alchitry.com/pages/alchitry-labs

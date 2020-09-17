@@ -39,6 +39,7 @@ public class Example {
 			int num_ai = 2; // will only work with Au FPGA
 			
 			try {
+				// connects to the FPGA
 				MicroFPGAController controller = new MicroFPGAController(num_lasers, num_ttl, num_servos, num_pwm, num_ai, port);
 				
 				// prints ID (Au or Cu)
