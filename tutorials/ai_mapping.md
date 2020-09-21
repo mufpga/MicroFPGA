@@ -33,4 +33,4 @@ Here is a summary table:
 
 The available auxiliary channels are indicated in bold. The second column is the hexadecimal addresses from the ADC manual. The "MicroFPGA channel" indicates the numbering of the MicroFPGA channels, while the physical pins (Au schematic, page 1) and the corresponding bank pin (Au schematic, page 2) are stated in the last two columns.
 
-Note that the dedicated analog channel is currently not used in MicroFPGA.
+Note that the dedicated analog channel (vp/vn) is currently not used in MicroFPGA.

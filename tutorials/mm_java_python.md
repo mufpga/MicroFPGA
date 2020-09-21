@@ -47,4 +47,4 @@ The Java library is provided as a Maven project. In the following step we show h
 
 # Labview
 
-A LabView example has been graciously provided by Christian Kieser (Electronic workshop, EMBL). It can be found in the MicroFPGA-LabView folder of the MicroFPGA repository.
+A LabView example has been graciously provided by Christian Kieser (Electronic workshop, EMBL). It can be found in the MicroFPGA-LabView folder of the MicroFPGA repository. It is not supported in this repository and is only given as possible reference.

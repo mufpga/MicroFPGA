@@ -1,6 +1,6 @@
 # Default layout Au+Br
 
-The following table represent the output pins of the Au FPGA used with the [Br breaking board](https://alchitry.com/collections/all/products/alchitry-br). You can find the reference sheet of the Br board in the previous link.
+The following table represent the output pins of the Au FPGA used with the [Br breaking board](https://alchitry.com/collections/all/products/alchitry-br). You can find the reference sheet of the Br board [here](https://cdn.alchitry.com/docs/Br%20Element%20Reference.pdf).
 
 The pin numbers are indicated in between parentheses:
 
@@ -20,17 +20,17 @@ The pin numbers are indicated in between parentheses:
 
 | Bank C |             |             |             |        |        |        |        |        |
 | :----: | :---------: | :---------: | :---------: | :----: | :----: | :----: | :----: | :----: |
-|  GND   | **L3** (49) | **L4** (46) | **P2** (43) | x (40) | x (37) | x (34) | x (31) | x (28) |
-|   +V   | **L2** (48) | **L5** (45) | **P3** (42) | x (39) | x (36) | x (33) | x (30) | x (27) |
-|  GND   | **L1** (2)  | **L6** (5)  | **P4** (8)  | x (11) | x (14) | x (17) | x (20) | x (23) |
-|  Raw   | **L0** (3)  | **L7** (6)  | **Cam** (9) | x (12) | x (15) | x (18) | x (21) | x (24) |
+|  GND   | **L3** (49) | **L4** (46) | **P2** (43) | + (40) | + (37) | + (34) | + (31) | + (28) |
+|   +V   | **L2** (48) | **L5** (45) | **P3** (42) | + (39) | + (36) | + (33) | + (30) | + (27) |
+|  GND   | **L1** (2)  | **L6** (5)  | **P4** (8)  | + (11) | + (14) | + (17) | + (20) | + (23) |
+|  Raw   | **L0** (3)  | **L7** (6)  | **Cam** (9) | + (12) | + (15) | + (18) | + (21) | + (24) |
 
 | Bank D |      |      |        |        |      |      |         |      |
 | :----: | :--: | :--: | :----: | :----: | :--: | :--: | :-----: | :--: |
-|  GND   |  x   |  x   | x (43) |   x    |  x   |  x   | VP (31) |  x   |
-|   +V   |  x   |  x   | x (42) |   x    |  x   |  x   | VN (30) |  x   |
-|  GND   |  x   |  x   | x (8)  | x (11) |  x   |  x   |    x    |  x   |
-|   +V   |  x   |  x   | x (9)  | x (12) |  x   |  x   |    x    |  x   |
+|  GND   |  x   |  x   | + (43) |   x    |  x   |  x   | VP (31) |  x   |
+|   +V   |  x   |  x   | + (42) |   x    |  x   |  x   | VN (30) |  x   |
+|  GND   |  x   |  x   | + (8)  | + (11) |  x   |  x   |    x    |  x   |
+|   +V   |  x   |  x   | + (9)  | + (12) |  x   |  x   |    x    |  x   |
 
 **S**: servomotor outputs
 
@@ -40,7 +40,7 @@ The pin numbers are indicated in between parentheses:
 
 **AIXN**: negative pole of the analog input X
 
-**P**: PWMoutputs
+**P**: PWM outputs
 
 **L**: laser trigger outputs
 
@@ -61,6 +61,3 @@ The pin numbers are indicated in between parentheses:
 Note that because the analog input pins on the Au run at 1.8 V (I/O standard LVCMOS18), all pins connected to bank 35 (see [Au design](https://alchitry.com/products/alchitry-au-fpga-development-board)) have to be configured with the same I/O standard. They are indicated here with "-" and are therefore will not work with hardware expecting a 3.3 V or 5 V digital logic.
 
 Pins are defined in the [user constraint file](https://github.com/jdeschamps/MicroFPGA/blob/master/Au_firmware/constraint/user.acf).
-
-# Default layout Cu+Br
-
