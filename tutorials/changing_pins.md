@@ -36,4 +36,6 @@ There, the channel 0 has the address 20, which means that it is on pin B24/23. I
 const ADDR = {31,30,20,28,23,22,21,29};
 ```
 
-Finally, compile and update the firmware on the FPGA.
+Finally, compile and update the firmware on the FPGA (see [Installing and building MicroFPGA](installing_microfpga.md) for a walkthrough).
+
+For more details on the analog channels addresses, consult the [Analog input mapping](ai_mapping.md) note.
