@@ -12,30 +12,31 @@ module cu_top (
     input usb_rx,           // USB->Serial input
     output usb_tx,           // USB->Serial output 
     input camera,
+    output laser0,
     output laser1,
     output laser2,
     output laser3,
     output laser4,
     output laser5,
     output laser6,
+    output laser7,
+    output ttl0,
     output ttl1,
     output ttl2,
     output ttl3,
     output ttl4,
-    output ttl5,
-    output ttl6,
+    output servo0,
     output servo1,
     output servo2,
     output servo3,
     output servo4,
     output servo5,
     output servo6,
+    output pwm0,
     output pwm1,
     output pwm2,
     output pwm3,
-    output pwm4,
-    output pwm5,
-    output pwm6
+    output pwm4
   ) {
   
   // number of signals
@@ -125,39 +126,39 @@ module cu_top (
     /// (see Alchitry Lucid tutorials) 
     if (reg.regOut.new_cmd) { // new command
       if (reg.regOut.write) { // if write
-        if (reg.regOut.address < NUM_LASERS) {         // Laser modes  
-          mode.d[reg.regOut.address] = reg.regOut.data[2:0];     
-        } else if (reg.regOut.address < 10+NUM_LASERS) {         // Laser duration
-          duration.d[reg.regOut.address-10] = reg.regOut.data[15:0]; 
-        } else if (reg.regOut.address < 20+NUM_LASERS) {            // Laser sequence
-          sequence.d[reg.regOut.address-20] = reg.regOut.data[15:0];    
-        } else if (reg.regOut.address < 30+NUM_TTL){           // TTL
-          ttl.d[reg.regOut.address-30] = reg.regOut.data[0];
-        } else if (reg.regOut.address < 40+NUM_SERVOS){           // Servo
-          position.d[reg.regOut.address-40] = reg.regOut.data[15:0];
-          servo_sig_update.d[reg.regOut.address-40] = 1;
-        } else if (reg.regOut.address < 50+NUM_PWM){           // PWM
-          dutycycle.d[reg.regOut.address-50] = reg.regOut.data[7:0];
-          pwmupdate.d[reg.regOut.address-50] = 1;
+        if (reg.regOut.address < ADDR_MODE+NUM_LASERS) {         // Laser modes  
+          mode.d[reg.regOut.address-ADDR_MODE] = reg.regOut.data[2:0];     
+        } else if (reg.regOut.address < ADDR_DUR+NUM_LASERS) {         // Laser duration
+          duration.d[reg.regOut.address-ADDR_DUR] = reg.regOut.data[15:0]; 
+        } else if (reg.regOut.address < ADDR_SEQ+NUM_LASERS) {            // Laser sequence
+          sequence.d[reg.regOut.address-ADDR_SEQ] = reg.regOut.data[15:0];    
+        } else if (reg.regOut.address < ADDR_TTL+NUM_TTL){           // TTL
+          ttl.d[reg.regOut.address-ADDR_TTL] = reg.regOut.data[0];
+        } else if (reg.regOut.address < ADDR_SERVOS+NUM_SERVOS){           // Servo
+          position.d[reg.regOut.address-ADDR_SERVOS] = reg.regOut.data[15:0];
+          servo_sig_update.d[reg.regOut.address-ADDR_SERVOS] = 1;
+        } else if (reg.regOut.address < ADDR_PWM+NUM_PWM){           // PWM
+          dutycycle.d[reg.regOut.address-ADDR_PWM] = reg.regOut.data[7:0];
+          pwmupdate.d[reg.regOut.address-ADDR_PWM] = 1;
         } 
       } else { // read
-         if (reg.regOut.address < NUM_LASERS) {                // Laser modes 
-          reg.regIn.data = mode.q[reg.regOut.address];        
+         if (reg.regOut.address < ADDR_MODE+NUM_LASERS) {                // Laser modes 
+          reg.regIn.data = mode.q[reg.regOut.address-ADDR_MODE];        
           reg.regIn.drdy = 1;    
-        } else if (reg.regOut.address < 10+NUM_LASERS) {       // Laser duration
-          reg.regIn.data = duration.q[reg.regOut.address-10];        
+        } else if (reg.regOut.address < ADDR_DUR+NUM_LASERS) {       // Laser duration
+          reg.regIn.data = duration.q[reg.regOut.address-ADDR_DUR];        
           reg.regIn.drdy = 1;    
-        } else if (reg.regOut.address < 20+NUM_LASERS) {       // Laser sequence
-          reg.regIn.data = sequence.q[reg.regOut.address-20];        
+        } else if (reg.regOut.address < ADDR_SEQ+NUM_LASERS) {       // Laser sequence
+          reg.regIn.data = sequence.q[reg.regOut.address-ADDR_SEQ];        
           reg.regIn.drdy = 1;       
-        } else if (reg.regOut.address < 30+NUM_TTL){           // TTL
-          reg.regIn.data = ttl.q[reg.regOut.address-30];        
+        } else if (reg.regOut.address < ADDR_TTL+NUM_TTL){           // TTL
+          reg.regIn.data = ttl.q[reg.regOut.address-ADDR_TTL];        
           reg.regIn.drdy = 1;
-        } else if (reg.regOut.address < 40+NUM_SERVOS){        // Servo
-          reg.regIn.data = position.q[reg.regOut.address-40];        
+        } else if (reg.regOut.address < ADDR_SERVOS+NUM_SERVOS){        // Servo
+          reg.regIn.data = position.q[reg.regOut.address-ADDR_SERVOS];        
           reg.regIn.drdy = 1;
-        } else if (reg.regOut.address < 50+NUM_PWM){           // PWM
-          reg.regIn.data = dutycycle.q[reg.regOut.address-50];        
+        } else if (reg.regOut.address < ADDR_PWM+NUM_PWM){           // PWM
+          reg.regIn.data = dutycycle.q[reg.regOut.address-ADDR_PWM];        
           reg.regIn.drdy = 1;     
         } else if (reg.regOut.address == ADDRESS_VERSION) {    // Version    
           reg.regIn.data = VERSION; // version number      
@@ -180,40 +181,41 @@ module cu_top (
     l.dura = duration.q; 
     l.sync = NUM_LASERSx{{camsync.sync}};
 
-    laser1 = l.lasersignal[0]; // laser trigger outputs
-    laser2 = l.lasersignal[1];
-    laser3 = l.lasersignal[2];
-    laser4 = l.lasersignal[3];
-    laser5 = l.lasersignal[4];
-    laser6 = l.lasersignal[5];
+    laser0 = l.lasersignal[0]; // laser trigger outputs
+    laser1 = l.lasersignal[1];
+    laser2 = l.lasersignal[2];
+    laser3 = l.lasersignal[3];
+    laser4 = l.lasersignal[4];
+    laser5 = l.lasersignal[5];
+    laser6 = l.lasersignal[6];
+    laser7 = l.lasersignal[7];
     
     //////////////// TTLs
-    ttl1 = ttl.q[0];
-    ttl2 = ttl.q[1];
-    ttl3 = ttl.q[2];
-    ttl4 = ttl.q[3];
-    ttl5 = ttl.q[4];
-    ttl6 = ttl.q[5];
+    ttl0 = ttl.q[0];
+    ttl1 = ttl.q[1];
+    ttl2 = ttl.q[2];
+    ttl3 = ttl.q[3];
+    ttl4 = ttl.q[4];
     
     //////////////// Servos
     servo_controller.position = position.q;
     servo_sig.update = servo_sig_update.q;
     servo_sig.signal_in = servo_controller.servo;
-    servo1 = servo_sig.signal_out[0];// servo outputs from the servo_stop module
-    servo2 = servo_sig.signal_out[1];
-    servo3 = servo_sig.signal_out[2];
-    servo4 = servo_sig.signal_out[3];
-    servo5 = servo_sig.signal_out[4];
-    servo6 = servo_sig.signal_out[5];
+    servo0 = servo_sig.signal_out[0];// servo outputs from the servo_stop module
+    servo1 = servo_sig.signal_out[1];
+    servo2 = servo_sig.signal_out[2];
+    servo3 = servo_sig.signal_out[3];
+    servo4 = servo_sig.signal_out[4];
+    servo5 = servo_sig.signal_out[5];
+    servo6 = servo_sig.signal_out[6];
     
     //////////////// PWM
     pulsewm.update = pwmupdate.q;
     pulsewm.value = dutycycle.q;
-    pwm1 = pulsewm.pulse[0];
-    pwm2 = pulsewm.pulse[1];
-    pwm3 = pulsewm.pulse[2];
-    pwm4 = pulsewm.pulse[3];
-    pwm5 = pulsewm.pulse[4];
-    pwm6 = pulsewm.pulse[5];
+    pwm0 = pulsewm.pulse[0];
+    pwm1 = pulsewm.pulse[1];
+    pwm2 = pulsewm.pulse[2];
+    pwm3 = pulsewm.pulse[3];
+    pwm4 = pulsewm.pulse[4];
   }
 }
