@@ -34,7 +34,7 @@ public class MicroFPGAController {
 	public static final int ERROR_UNKNOWN_COMMAND = 11206655;
 
 	public static final int ID_AU = 79;
-	public static final int ID_CU = 49;
+	public static final int ID_CU = 29;
 	public static final int CURRENT_VERSION = 2;
 	
 	private ArrayList<TTL> ttls_;
