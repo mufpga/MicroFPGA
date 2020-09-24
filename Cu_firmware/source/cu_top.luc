@@ -38,16 +38,27 @@ module cu_top (
     output pwm6
   ) {
   
+  // number of signals
+  const NUM_LASERS = 8;
+  const NUM_TTL = 5;
+  const NUM_PWM = 5;
+  const NUM_SERVOS = 7;
+  
+  // base addresses for each signal type
+  const ADDR_MODE = 0; 
+  const ADDR_DUR = NUM_LASERS; 
+  const ADDR_SEQ = ADDR_DUR+NUM_LASERS; 
+  const ADDR_TTL = ADDR_SEQ+NUM_LASERS; 
+  const ADDR_SERVOS = ADDR_TTL+NUM_TTL; 
+  const ADDR_PWM = ADDR_SERVOS+NUM_SERVOS; 
+  
   const VERSION = 2;
   const ID = 29; // Cu atomic number
  
+  // constants returned 
   const ADDRESS_VERSION = 100;
   const ADDRESS_ID = 101;
   const ERROR_UNKNOW_COMMAND = 11206655; // only answer with meaningful data in the 3rd byte
-  const NUM_LASERS = 6;
-  const NUM_PWM = 6;
-  const NUM_TTL = 6;
-  const NUM_SERVOS = 6;
   
   sig rst;  // reset signal
    

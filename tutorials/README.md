@@ -16,9 +16,9 @@
 - [Assign signal to another pin](changing_pins.md)
 - [Change signal addresses](change_addresses.md)
 - [Change number of available signals](change_number_signals.md)
-- [Increase PWM resolution]()
-- [Change Servo signal period and resolution]()
-- [Creating a digital input signal]()
+- [Change laser pulse duration resolution and maximum](change_laser_duration.md)
+- [Increase PWM resolution](change_pwm_resolution.md)
+- [Change Servo signal period and resolution](change_servo_signal.md)
 
 ### Notes
 
