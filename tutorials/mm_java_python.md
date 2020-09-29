@@ -20,9 +20,7 @@ In order to use MicroFPGA using the Micro-Manager device adapter or the Java/Pyt
 
 Note that Micro-Manager 1.4.23 does not allow selecting the default baud rate. Therefore refer to the "[Change the communication baudrate](changing_baudrate.md)" tutorial.
 
-#### EMU plugin
 
-(soon)
 
 # Java
 
