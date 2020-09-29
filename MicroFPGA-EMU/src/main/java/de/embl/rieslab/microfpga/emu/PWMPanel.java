@@ -99,12 +99,12 @@ public class PWMPanel extends ConfigurablePanel {
 
 	@Override
 	protected void initializeParameters() {
-		addUIParameter(new StringUIParameter(this, getPropertyLabel(NAME),"Title of the panel.", getPanelLabel()));
+		addUIParameter(new StringUIParameter(this, NAME, "Title of the panel.", getPanelLabel()));
 	}
 
 	@Override
 	protected void parameterhasChanged(String parameterName) {
-		if (getPropertyLabel(NAME).equals(parameterName)) {
+		if (NAME.equals(parameterName)) {
 			try {
 				String s = getStringUIParameterValue(NAME);
 				border_.setTitle(s);

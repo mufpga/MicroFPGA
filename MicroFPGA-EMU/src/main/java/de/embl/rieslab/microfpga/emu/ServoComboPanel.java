@@ -73,7 +73,7 @@ public class ServoComboPanel extends ConfigurablePanel {
 
 	@Override
 	protected void initializeParameters() {
-		addUIParameter(new StringUIParameter(this, getPropertyLabel(NAME),"Text displayed in above the drop-down list.",getPanelLabel()));
+		addUIParameter(new StringUIParameter(this, NAME,"Text displayed in above the drop-down list.",getPanelLabel()));
 		
 		StringBuilder sb = new StringBuilder(MAX_POS);
 		defaults = new String[MAX_POS];
@@ -84,12 +84,12 @@ public class ServoComboPanel extends ConfigurablePanel {
 		}
 
 		sb.deleteCharAt(sb.length()-1);
-		addUIParameter(new StringUIParameter(this, getPropertyLabel(NAME_POS),"Comma separated names of the positions, there must be "+MAX_POS+" values.",sb.toString()));
+		addUIParameter(new StringUIParameter(this, NAME_POS,"Comma separated names of the positions, there must be "+MAX_POS+" values.",sb.toString()));
 	}
 
 	@Override
 	protected void parameterhasChanged(String parameterName) {
-		if (getPropertyLabel(NAME).equals(parameterName)) {
+		if (NAME.equals(parameterName)) {
 			try {
 				String s = getStringUIParameterValue(NAME);
 				border_.setTitle(s);
@@ -99,9 +99,9 @@ public class ServoComboPanel extends ConfigurablePanel {
 				e.printStackTrace();
 			}
 		}
-		if (getPropertyLabel(NAME_POS).equals(parameterName)) {
+		if (NAME_POS.equals(parameterName)) {
 			try {
-				String s = getStringUIParameterValue(getPropertyLabel(NAME_POS));
+				String s = getStringUIParameterValue(NAME_POS);
 				setNames(s);
 			} catch (UnknownUIParameterException e) {
 				e.printStackTrace();
