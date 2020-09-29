@@ -109,14 +109,14 @@ public class ServoPanel  extends ConfigurablePanel {
 		max_ = 65535;
 		title_ = getPanelLabel();
 	
-		addUIParameter(new StringUIParameter(this, getPropertyLabel(NAME),"Title of the panel.", title_));
-		addUIParameter(new IntegerUIParameter(this, getPropertyLabel(MIN),"Min value.", min_));
-		addUIParameter(new IntegerUIParameter(this, getPropertyLabel(MAX),"Max value.", max_));
+		addUIParameter(new StringUIParameter(this, NAME,"Title of the panel.", title_));
+		addUIParameter(new IntegerUIParameter(this, MIN,"Min value.", min_));
+		addUIParameter(new IntegerUIParameter(this, MAX,"Max value.", max_));
 	}
 
 	@Override
 	protected void parameterhasChanged(String parameterName) {
-		if (getPropertyLabel(NAME).equals(parameterName)) {
+		if (NAME.equals(parameterName)) {
 			try {
 				title_ = getStringUIParameterValue(NAME);
 				border_.setTitle(title_);
@@ -125,7 +125,7 @@ public class ServoPanel  extends ConfigurablePanel {
 			} catch (UnknownUIParameterException | UnknownUIPropertyException e) {
 				e.printStackTrace();
 			}
-		} else if (getPropertyLabel(MIN).equals(parameterName)) {
+		} else if (MIN.equals(parameterName)) {
 			try {
 				int min = getIntegerUIParameterValue(MIN);
 				min_ = min;
@@ -133,7 +133,7 @@ public class ServoPanel  extends ConfigurablePanel {
 			} catch (UnknownUIParameterException | IncorrectUIParameterTypeException e) {
 				e.printStackTrace();
 			}
-		} else if (getPropertyLabel(MAX).equals(parameterName)) {
+		} else if (MAX.equals(parameterName)) {
 			try {
 				int max = getIntegerUIParameterValue(MAX);
 				max_ = max;
