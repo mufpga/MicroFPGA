@@ -53,7 +53,7 @@ public class ServoPanel  extends ConfigurablePanel {
 		this.setBorder(border_);
 		border_.setTitleFont(border_.getTitleFont().deriveFont(Font.BOLD, 12));
 		
-		textfield_ = new JTextField(String.valueOf(max_)+".0");
+		textfield_ = new JTextField(String.valueOf(max_));
 		slider_ = new JSlider(JSlider.HORIZONTAL, min_, max_, max_);
 		
 		GridBagConstraints c = new GridBagConstraints();
@@ -62,14 +62,17 @@ public class ServoPanel  extends ConfigurablePanel {
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 1;
+		c.weightx = 0.5;
 		this.add(new JLabel("Value:"),c);
 
 		c.gridx = 1;
+		c.weightx = 0.6;
 		this.add(textfield_,c);
 
 		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 3;
+		c.weightx = 0.5;
 		this.add(slider_,c);
 	}
 

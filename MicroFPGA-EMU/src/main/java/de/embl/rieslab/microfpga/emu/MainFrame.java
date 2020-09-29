@@ -1,9 +1,12 @@
 package de.embl.rieslab.microfpga.emu;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -14,16 +17,15 @@ import de.embl.rieslab.emu.utils.settings.BoolSetting;
 import de.embl.rieslab.emu.utils.settings.IntSetting;
 import de.embl.rieslab.emu.utils.settings.Setting;
 import de.embl.rieslab.emu.utils.settings.StringSetting;
-import de.embl.rieslab.microfpga.emu.LaserTriggerPanel;
 
 public class MainFrame  extends ConfigurableMainFrame{
 
 	private static final long serialVersionUID = 1L;
 
 	private static final int MAX_LASERS = 10;
-	private static final int MAX_SERVOS = 10;
-	private static final int MAX_TTL = 10;
-	private static final int MAX_PWM = 10;
+	private static final int MAX_SERVOS = 7;
+	private static final int MAX_TTL = 5;
+	private static final int MAX_PWM = 5;
 	private static final int MAX_AI = 8;
 	
 	// settings
@@ -124,15 +126,22 @@ public class MainFrame  extends ConfigurableMainFrame{
     	////////////////////////// Servos
     	if(((BoolSetting) settings.get(SETTING_USE_SERVO)).getValue() || 
     			((BoolSetting) settings.get(SETTING_USE_SERVO_COMBO)).getValue()) {
-			JPanel servos = new JPanel();
+			JPanel servo_overall = new JPanel(); 
+			servo_overall.setLayout(new GridBagLayout());
+			
+			JPanel buffer = new JPanel(); 
+    		JPanel servos = new JPanel();
 
 			int n_servos = ((IntSetting) settings.get(SETTING_NUM_SERVO)).getValue();
 			int n_servos_combo = ((IntSetting) settings.get(SETTING_NUM_SERVO_COMBO)).getValue();
 					
 			if(n_servos+n_servos_combo > 0) {
 				if(n_servos+n_servos_combo > MAX_SERVOS) {
-					n_servos = MAX_SERVOS % 2 == 0 ? MAX_SERVOS/2 : (MAX_SERVOS-1)/2;
-					n_servos_combo = MAX_SERVOS % 2 == 0 ? n_servos : n_servos+1;
+					if(n_servos_combo == 0) {
+						n_servos = MAX_SERVOS;
+					} else {
+						n_servos_combo = MAX_SERVOS;
+					}
 				}
 				
 				int n_rows = (n_servos+n_servos_combo) % 2 == 0 ? 
@@ -147,9 +156,17 @@ public class MainFrame  extends ConfigurableMainFrame{
 					ServoPanel pane = new ServoPanel("Servo "+i);
 					servos.add(pane);
 				}
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+				c.gridy = 0;
+				servo_overall.add(servos,c);
+
+				c.fill = GridBagConstraints.BOTH;
+				c.gridy = 1;
+				servo_overall.add(buffer,c);
 				
 				String title = settings.get(SETTING_NAME_SERVO).getStringValue();
-				tabs.add(title, servos);
+				tabs.add(title, servo_overall);
 			}
     	}
 
@@ -233,7 +250,6 @@ public class MainFrame  extends ConfigurableMainFrame{
     	}
     	
     	this.add(tabs);
-		
         this.pack(); 
 	}
 

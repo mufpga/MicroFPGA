@@ -1,6 +1,7 @@
 package de.embl.rieslab.microfpga.emu;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -88,7 +89,7 @@ public class LaserTriggerPanel extends ConfigurablePanel {
 		//combobehaviour_.setMinimumSize(new Dimension(40,10));
 
 		/////////////////////////////////////////////////////// pulse length
-		textfieldpulselength_ = new JTextField();
+		textfieldpulselength_ = new JTextField("0");
 		textfieldpulselength_.setToolTipText("Set the pulse length of the laser.");
 		//textfieldpulselength_.setPreferredSize(new Dimension(60,20));
 		
@@ -99,7 +100,7 @@ public class LaserTriggerPanel extends ConfigurablePanel {
 		/////////////////////////////////////////////////////// sequence
 		textfieldsequence_ = new JTextField();
 		textfieldsequence_.setToolTipText("Set the pulse sequence of the laser.");
-		//textfieldsequence_.setPreferredSize(new Dimension(105,20));
+		textfieldsequence_.setMaximumSize(new Dimension(105,20));
 
 		/////////////////////////////////////////////////////// place components
 		GridBagConstraints c = new GridBagConstraints();
