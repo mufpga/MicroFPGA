@@ -1,6 +1,6 @@
 # MicroFPGA
 
-MicroFPGA is an electronic platform generating signals that are commonly needed when controlling a microscope. It is based on the Au and Cu FPGA (Alchitry).
+MicroFPGA is an electronic platform generating signals that are commonly needed when controlling a microscope. It is based on the Au and Cu FPGAs (Alchitry).
 
 The available signals are the following:
 
