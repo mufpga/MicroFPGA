@@ -5,9 +5,9 @@ Addresses in the MicroFPGA [register Interface](register_interface.md) are defin
 ```verilog
 // number of signals
 const NUM_LASERS = 10;
-const NUM_TTL = 10;
-const NUM_PWM = 10;
-const NUM_SERVOS = 10;
+const NUM_TTL = 5;
+const NUM_PWM = 5;
+const NUM_SERVOS = 7;
 const NUM_ANALOG = 8;
 
 // addresses
