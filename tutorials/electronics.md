@@ -3,9 +3,9 @@
 In order to use MicroFPGA with downstream devices, voltage conversion is sometimes necessary. Indeed, MicroFPGA present the following limitations:
 
 - Output voltages are limited to 3.3 V.
-- Digital inputs must be inferior to 3.3 V.
+- Digital inputs must be smaller than 3.3 V.
 - No analog output signals natively.
-- Analog input voltages are measured up to 1 V and must be inferior to 1.8 V (Au FPGA).
+- Analog input voltages are measured up to 1 V and must be smaller than 1.8 V (Au FPGA).
 
 **If higher voltages are supplied, the FPGA can be irreversibly damaged.**
 
