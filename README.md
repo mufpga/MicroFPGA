@@ -58,4 +58,4 @@ Check out examples of [moveable optical elements](https://github.com/ries-lab/Ri
 
 
 
-MicroFPGA was written by Joran Deschamps, EMBL (2020). The electronics and LabView example were developed by Christian Kieser (Electronics Workshop, EMBL).
+MicroFPGA was written by Joran Deschamps, EMBL (2020). The custom electronic boards and the LabView example were developed by Christian Kieser (Electronics Workshop, EMBL).
