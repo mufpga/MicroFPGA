@@ -4,7 +4,7 @@
 
 1. Download and install [Git](https://git-scm.com/downloads).
 
-2. using the newly installed git console, clone the MicroFPGA repository in the folder of your choice:
+2. Using the newly installed git console, clone the MicroFPGA repository in the folder of your choice:
 
    ```bash
    $ cd /path/to/folder/
