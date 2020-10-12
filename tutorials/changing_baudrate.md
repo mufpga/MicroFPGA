@@ -1,6 +1,6 @@
 # Changing the baud rate
 
-The baud rate is a central parameter of serial communication and corresponds the rate at which information is transferred between the computer and the FPGA. If the wrong baud rate is used for attempted communication, the communication will fail.
+The baud rate is a central parameter of serial communication and corresponds to the rate at which information is transferred between the computer and the FPGA. If the wrong baud rate is used for attempted communication, the communication will fail.
 
 The default baud rate of MicroFPGA is **100000000**. Some programs, such as Micro-Manager version 1.4, are not capable of such a high baud rate and it therefore needs to changed in the FPGA. If used, the Java and Python libraries also need to be updated.
 
