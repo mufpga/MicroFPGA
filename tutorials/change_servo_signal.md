@@ -40,9 +40,9 @@ dff count_sig[30]; // count until ~ 10 sec @ 100MHz
 ```
 
 Since the clock frequency is 100 MHz, then the switch-off delay of the servos is:
-$$
-(2^{30}-1)*10^{-8} \approx 10.7 s
-$$
+
+<img src="https://render.githubusercontent.com/render/math?math=(2^{30}-1)*10^{-8} \approx 10.7 s">
+
 You can change the bit depth of *count_sig* to adjust the switch-off delay, for instance:
 
 |      line 16       | delay (s) |
