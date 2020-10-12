@@ -97,7 +97,7 @@ PWMs are similar to the servo signals, but are not switched off. MicroFPGA uses 
 
 Analog inputs are only available with the Au FPGA.
 
-:warning:  **Do not supply inputs with more than 1.8V to the AU FPGA analog inputs​ :warning: **
+:warning:  **Do not supply inputs with more than 1.8V to the AU FPGA analog inputs** :warning: 
 
 MicroFPGA has eight analog read-out pins. Using the Au FPGA, you can read-out the measured voltage scaled to 0-65535:
 
