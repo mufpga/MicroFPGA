@@ -11,8 +11,8 @@ In order to use MicroFPGA with downstream devices, voltage conversion is sometim
 
 Here, we provide two custom electronic boards to convert voltages to acceptable levels for the FPGA or downstream devices:
 
-- [Signal conversion board](): multi-channel electronics allowing conversion of 3.3 V signals to 5 V, or inversely, with the option to low-pass the input signal in order to produce an analog signal output from a PWM (pulse-width modulation) input.
-- [Analog conversion board](): multi-channel electronics converting 10 V or 5 V analog signals to 1 V, with the option to cap the maximum voltage to 1.6 V.
+- [Signal conversion board](https://github.com/jdeschamps/MicroFPGA/tree/master/Electronics/Signal_conversion): multi-channel electronics allowing conversion of 3.3 V signals to 5 V, or inversely, with the option to low-pass the input signal in order to produce an analog signal output from a PWM (pulse-width modulation) input.
+- [Analog conversion board](https://github.com/jdeschamps/MicroFPGA/tree/master/Electronics/Analog_conversion): multi-channel electronics converting 10 V or 5 V analog signals to 1 V, with the option to cap the maximum voltage to 1.6 V.
 
 ### Signal conversion board
 
