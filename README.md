@@ -22,7 +22,7 @@ MicroFPGA can generate and read several control signals useful in microscopy:
 
 |              Signal              |                           Details                            |          Use examples           |
 | :------------------------------: | :----------------------------------------------------------: | :-----------------------------: |
-| Laser triggering (**Au**/**Cu**) | Using a camera read-out signal, multiple lasers can be triggered independently following custom patterns and µs pulse resolution |        Laser triggering         |
+| Laser triggering (**Au**/**Cu**) | Using a camera input signal, multiple lasers can be triggered independently following custom patterns and µs pulse resolution |        Laser triggering         |
 |       TTL (**Au**/**Cu**)        |                       HIGH/LOW signals                       |          Flip-mirrors           |
 |      Servos (**Au**/**Cu**)      |      1 ms - 2 ms servo signals with a switch-off delay       | Filter-wheel, moveable elements |
 |       PWM (**Au**/**Cu**)        | Can be used to create an analog signal using a low-pass circuit |         AOM or laser %          |
