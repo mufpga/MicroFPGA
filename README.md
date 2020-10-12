@@ -1,8 +1,9 @@
 
 # MicroFPGA
 
-<!---MicroFPGA is a cost-efficient electronic platform generating typical signals used to control microscope elements. It is based on hobby [FPGA](https://en.wikipedia.org/wiki/Field-programmable_gate_array "Wikipedia")s (Field-Programmable Gate Array) from [Alchitry](https://alchitry.com/collections/all) (Au and Cu FPGAs). 
+MicroFPGA is a cost-efficient electronic platform generating typical signals used to control microscope elements. It is based on hobby [FPGA](https://en.wikipedia.org/wiki/Field-programmable_gate_array "Wikipedia")s from [Alchitry](https://alchitry.com/collections/all) (Au and Cu FPGAs). 
 
+<!---
 **tutorials**
 
 ## Why use a FPGA?
