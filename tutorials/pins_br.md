@@ -58,7 +58,7 @@ The pin numbers are indicated in between parentheses:
 
 **x**: unavailable or unused pins
 
-Note that because the analog input pins on the Au run at 1.8 V (I/O standard LVCMOS18), all pins connected to bank 35 (see [Au design](https://alchitry.com/products/alchitry-au-fpga-development-board)) have to be configured with the same I/O standard. They are indicated here with "-" and are therefore will not work with hardware expecting a 3.3 V or 5 V digital logic.
+Note that because the analog input pins on the Au run at 1.8 V (I/O standard LVCMOS18), all pins connected to bank 35 (see [Au design](https://alchitry.com/products/alchitry-au-fpga-development-board)) have to be configured with the same I/O standard. They are indicated here with "-" and therefore will not work with hardware expecting a 3.3 V or 5 V digital logic.
 
 Pins are defined in the [user constraint file](https://github.com/jdeschamps/MicroFPGA/blob/master/Au_firmware/constraint/user.acf).
 
