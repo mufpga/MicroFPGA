@@ -7,7 +7,7 @@ In order to use MicroFPGA with downstream devices, voltage conversion is sometim
 - No analog output signals natively.
 - Analog input voltages are measured up to 1 V and must be smaller than 1.8 V (Au FPGA).
 
-**If higher voltages are supplied, the FPGA can be irreversibly damaged.**
+:warning: **If higher voltages are supplied, the FPGA can be irreversibly damaged.** :warning: 
 
 Here, we provide two custom electronic boards to convert voltages to acceptable levels for the FPGA or downstream devices:
 
