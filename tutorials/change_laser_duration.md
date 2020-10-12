@@ -9,7 +9,7 @@ const NM_CYCLES = 100; // convert to ~us
 Since the Alchitry FPGAs have an internal clock of frequency 100MHz, each clock cycle takes about 1/100 us. If we wanted to have a step size for the pulse duration of 100 ns, then line 35 becomes:
 
 ```verilog
-const NM_CYCLES = 10; // convert to ~us
+const NM_CYCLES = 10;
 ```
 
 The firmware then needs to be compiled and updated on the FPGA.
