@@ -26,7 +26,7 @@
 
 7. Once the project has finished, upload it to your board with the plain arrow (Flash).
 
-8. If the FPGA interface 1 has also been configured in Zadig with WinUSB, you can test the firmware by using the "Tools/Register Interface" in Alchitry.  Type "101" as an address and click on "Read". The value should change to 49 (Cu) or 79 (Au).
+8. If the FPGA interface 1 has also been configured in Zadig with WinUSB, you can test the firmware by using the "Tools/Register Interface" in Alchitry.  Type "101" as an address and click on "Read". The value should change to 29 (Cu) or 79 (Au).
 
 
 
