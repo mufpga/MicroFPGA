@@ -1,6 +1,6 @@
 ## Tutorials
 
-### Resources
+### Installation tutorials
 
 - [MicroFPGA principle and signals](microfpga.md): a brief overview of MicroFPGA.
 - [Installing and building MicroFPGA](installing_microfpga.md): installing MicroFPGA, step by step.
@@ -10,7 +10,7 @@
 - [Electronics](electronics.md): an overview of the electronics provided with MicroFPGA.
 - [Pins mapping](pins_br.md): summary of the default pins mapping for the Au FPGA.
 
-### Tutorials
+### Modifying the firmware
 
 - [Change the communication baud rate](changing_baudrate.md)
 - [Assign signal to another pin](changing_pins.md)
