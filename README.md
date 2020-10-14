@@ -28,7 +28,7 @@ MicroFPGA can generate and read several control signals useful in microscopy:
 |       PWM (**Au**/**Cu**)        | Can be used to create an analog signal using a low-pass circuit |         AOM or laser %          |
 |     Analog read-out (**Au**)     |            8 analog read-out channels (0 to 1 V)             |        Sensor read-outs         |
 
-We provide communication libraries for [Micro-Manager](https://micro-manager.org/), [Java](MicroFPGA-Java), [Python](MicroFPGA-Py) and an example for [LabView](MicroFPGA-LabView). In order to install and communicate with MicroFPGA, refer to the [tutorials](tutorials).
+We provide communication libraries for [Micro-Manager](https://micro-manager.org/), [Java](MicroFPGA-Java), [Python](MicroFPGA-Py) and an example for [LabView](MicroFPGA-LabView). In order to install and communicate with MicroFPGA, refer to the [tutorials](https://github.com/jdeschamps/MicroFPGA/blob/master/tutorials/README.md).
 
 ## Content
 
@@ -50,7 +50,7 @@ The repository contains the firmware for the FPGAs, as well as multiple complime
 
 - [Electronics](Electronics): complementary electronic boards to scale up/down voltages or generate analog signals from MicroFPGA outputs.
 
-- [Tutorials](tutorials): detailed walkthrough of MicroFPGA installation, of the software and electronics, as well as examples of firmware modifications.
+- [Tutorials](https://github.com/jdeschamps/MicroFPGA/blob/master/tutorials/README.md): detailed walkthrough of MicroFPGA installation, of the software and electronics, as well as examples of firmware modifications.
 
 ## External resources
 
