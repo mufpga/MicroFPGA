@@ -25,7 +25,7 @@ The [signal conversion board](https://github.com/jdeschamps/MicroFPGA/tree/maste
 - 4 voltage conversion channels with optional low-pass filter.
 - 4 bidirectional voltage conversion channels.
 
-The channels only differ by the analog detour option. For the conversion channels without analog detour, or when the analog detour is ignored, the channels can be used in either direction: voltage A -> voltage B or B ->  A. **When the analog detour is soldered in, the voltage conversion is only performed A -> B**.
+The channels only differ by the analog detour option. For the conversion channels without analog detour, or when the analog detour is ignored, the channels can be used in either direction: voltage A -> voltage B or B ->  A. **When the analog detour is soldered in, the voltage conversion is only performed A -> B**. The low pass step is performed by a Sallen-Key circuit with a cut-off at 10 Hz. 
 
 In order to choose the input and output voltages, refer to the channel header:
 
@@ -40,7 +40,7 @@ The channel header allows choosing the following parameters:
 
 #### Power supply
 
-The board is powered by a 5 V power supply. We typically use the same external power supply for the FPGA and the signal conversion board.
+The board is powered by a 5 V power supply (1 A). We typically use the same external power supply for the FPGA and the signal conversion board.
 
 #### Folder content
 
@@ -84,7 +84,7 @@ Each channel header present options that need to be jumped:
 
 #### Power supply
 
-The board is powered by a 12 V power supply. 
+The board is powered by a 12 V power supply (1 A).
 
 #### Folder content
 
@@ -92,6 +92,7 @@ The [analog conversion board](https://github.com/jdeschamps/MicroFPGA/tree/maste
 
 - Altium project: complete project generated with Altium 17.1.9 (Build 592).
 - BOM: bill of materials exported from the Altium project.
+- Circuit: summary pdf containing an overview of the boards and the different circuits, generated from the Altium project.
 - Gerber: gerber layers compatible with [gerbv](http://gerbv.sourceforge.net/), generated from the Altium project.
 - NC drill: numeric control drill files corresponding to the PCB board, generated from the Altium project.
 
