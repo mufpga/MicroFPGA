@@ -6,10 +6,10 @@
 
 ### Installation tutorials
 
-1 [Installing and building MicroFPGA](installing_microfpga.md): installing MicroFPGA, step by step.
-2 [Serial communication (Windows)](serial_communication_win.md): using MicroFPGA as a COM port.
-3 [Communication interface](register_interface.md): summary of the communication interface.
-4 [Micro-Manager, Java and Python code](mm_java_python.md): loading MicroFPGA in Micro-Manager, Java and Python.
+1. [Installing and building MicroFPGA](installing_microfpga.md): installing MicroFPGA, step by step.
+2. [Serial communication (Windows)](serial_communication_win.md): using MicroFPGA as a COM port.
+3. [Communication interface](register_interface.md): summary of the communication interface.
+4. [Micro-Manager, Java and Python code](mm_java_python.md): loading MicroFPGA in Micro-Manager, Java and Python.
 
 ### Modifying the firmware
 
