@@ -3,8 +3,9 @@
 // PROJECT:       Micro-Manager
 // SUBSYSTEM:     DeviceAdapters
 //-----------------------------------------------------------------------------
-// DESCRIPTION:   Adapter for the Au and Cu FPGA from Alchitry. The adapter 
-//				  comes with a firmware.
+// DESCRIPTION:   Adapter for MicroFPGA, a FPGA platform using FPGA boards from
+//                Alchitry. The adapter must be used with a special firmware, see:
+//                https://github.com/jdeschamps/MicroFPGA
 // COPYRIGHT:     EMBL
 // LICENSE:       LGPL
 //
@@ -29,7 +30,7 @@ const char* g_DeviceNameTTL = "TTL";
 const char* g_DeviceNameServos = "Servos";
 
 //////////////////////////////////////////////////////////////////////////////
-/// Constants that should match the one in the firmware
+/// Constants that should match the ones in the firmware
 const int g_version = 2;
 const int g_id_au = 79;
 const int g_id_cu = 29;
@@ -200,8 +201,6 @@ MM::DeviceDetectionStatus MicroFPGAHub::DetectDevice(void)
 
 int MicroFPGAHub::Initialize()
 {
-	// Code adapted from Arduino.cpp, Micro-Manager, written by Nico Stuurman and Karl Hoover
-
 	// Name
 	int ret = CreateProperty(MM::g_Keyword_Name, g_DeviceNameMicroFPGAHub, MM::String, true);
 	if (DEVICE_OK != ret)
@@ -380,25 +379,6 @@ int MicroFPGAHub::OnPort(MM::PropertyBase* pProp, MM::ActionType pAct)
 	}
 	return DEVICE_OK;
 }
-/*
-int MicroFPGAHub::OnVersion(MM::PropertyBase* pProp, MM::ActionType pAct)
-{
-	if (pAct == MM::BeforeGet)
-	{
-		pProp->Set((long)version_);
-	}
-	return DEVICE_OK;
-}
-
-int MicroFPGAHub::OnID(MM::PropertyBase* pProp, MM::ActionType pAct)
-{
-	if (pAct == MM::BeforeGet)
-	{
-		pProp->Set((long)id_);
-	}
-	return DEVICE_OK;
-}
-*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //////

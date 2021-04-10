@@ -3,8 +3,9 @@
 // PROJECT:       Micro-Manager
 // SUBSYSTEM:     DeviceAdapters
 //-----------------------------------------------------------------------------
-// DESCRIPTION:   Adapter for the Au and Cu FPGA from Alchitry. The adapter 
-//				  comes with a firmware.
+// DESCRIPTION:   Adapter for MicroFPGA, a FPGA platform using FPGA boards from
+//                Alchitry. The adapter must be used with a special firmware, see:
+//                https://github.com/jdeschamps/MicroFPGA
 // COPYRIGHT:     EMBL
 // LICENSE:       LGPL
 //
@@ -45,8 +46,6 @@ public:
 
    // property handlers
    int OnPort(MM::PropertyBase* pPropt, MM::ActionType eAct);
-   //int OnVersion(MM::PropertyBase* pPropt, MM::ActionType eAct);
-   //int OnID(MM::PropertyBase* pPropt, MM::ActionType eAct);
 
    int PurgeComPortH() {return PurgeComPort(port_.c_str());}
    int SendWriteRequest(long address, long value);
