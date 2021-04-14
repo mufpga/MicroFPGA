@@ -41,7 +41,7 @@ The repository contains the firmware for the FPGAs, as well as multiple complime
 
 #### Communication software
 
-- [Micro-Manager device adapter](Device_Adapter): MicroFPGA driver source code for the microscope control software [Micro-Manager](https://micro-manager.org/), written in C++.
+- [Micro-Manager device adapter](Device_Adapter): MicroFPGA driver source code for the microscope control software [Micro-Manager](https://micro-manager.org/), written in C++. The device adapter is part of Micro-Manager, and the source code is only copied here for reference.
 - [Java](MicroFPGA-Java): communication library in Java, with example code.
 - [Python](MicroFPGA-Py): communication library in Python, with example code. 
 - [LabView](MicroFPGA-LabView): example communication in LabView. This project is not maintained. 
