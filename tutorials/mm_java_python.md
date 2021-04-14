@@ -1,16 +1,14 @@
 # Micro-Manager
 
-1. [Download](https://github.com/jdeschamps/MicroFPGA/releases/tag/v1.0-beta) the compiled device adapter. Note the compiled date, more recent version of Micro-Managers might require to recompile it.
-2. Place the compiled device adapter (*mmgr_del_MicroFPGA.dll*) in the installation folder of Micro-Manager.
-3. Start Micro-Manager.
-4. In the "Devices" menu, choose "Hardware Configuration Wizard...".
-5. Create a new configuration or modify an existing one.
-6. In the hardware list, find "MicroFPGA" and double click on the device adapter.
-7. Select the relevant COMport and enter the baudrate (default is 1000000). Click ok.
-8. In the windows that opens, select the signals you want to use. Click next.
-9. For each signal, select the number of channels. Click ok.
-10. Save the new hardware configuration.
-11. In the device property browser, available from the "Devices" menu, you have access to all properties from MicroFPGA.
+1. Start Micro-Manager.
+2. In the "Devices" menu, choose "Hardware Configuration Wizard...".
+3. Create a new configuration or modify an existing one.
+4. In the hardware list, find "MicroFPGA" and double click on the device adapter.
+5. Select the relevant COMport and enter the baudrate (default is 1000000). Click ok.
+6. In the windows that opens, select the signals you want to use. Click next.
+7. For each signal, select the number of channels. Click ok.
+8. Save the new hardware configuration.
+9. In the device property browser, available from the "Devices" menu, you have access to all properties from MicroFPGA.
 
 #### Micro-Manager 1.4.23
 
