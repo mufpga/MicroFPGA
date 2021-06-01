@@ -4,7 +4,7 @@
 2. In the "Devices" menu, choose "Hardware Configuration Wizard...".
 3. Create a new configuration or modify an existing one.
 4. In the hardware list, find "MicroFPGA" and double click on the device adapter.
-5. Select the relevant COMport and enter the baudrate (default is 1000000). Click ok.
+5. Select the relevant COMport and enter the baudrate (the FPGA default baudrate is 1000000). Click ok.
 6. In the windows that opens, select the signals you want to use. Click next.
 7. For each signal, select the number of channels. Click ok.
 8. Save the new hardware configuration.
