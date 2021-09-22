@@ -11,8 +11,10 @@ Since the Alchitry FPGAs have an internal clock of frequency 100MHz, each clock 
 ```verilog
 const NM_CYCLES = 10;
 ```
-
 The firmware then needs to be compiled and updated on the FPGA.
+
+**Important note**: If you increase `NM_CYCLES`, you need to update the counter, to make sure that it can count more cycles than the maximum duration d times `NM_CYCLES`: `max(c)>d*NM_CYCLES`. By default the pulse duration is 16 bits, which means that the counter needs to go as high as `(2^16-1)*NM_CYCLES`. For `NM_CYCLES=1000`, the counter does not need to be changed, usually by increasing the number of bits by one. The number of bits need to be `x > log2((2^16-1)*NM_COUNTER+1)`, which means larger than 26.
+
 
 ## Change laser duration maximum
 
@@ -34,6 +36,12 @@ The laser pulse duration is encoded by a 16 bits value. The maximum value is the
 
    ```verilog
    input dura[32],
+   ```   
+   
+4. In laser_trigger.luc (line 42), adjust the bit depth of counter (see previous section):
+
+   ```verilog
+   dff count_sig[x]; // x > log2((2^16-1)*NM_COUNTER+1
    ```
 
 Now, the code on the user side should be changed to accept higher values, for instance:
