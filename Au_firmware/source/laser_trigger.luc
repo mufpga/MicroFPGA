@@ -39,7 +39,7 @@ module laser_trigger (
     .rst(rst) {
       dff sig_sync[2];
       dff sig_old;
-      dff count_sig[22];
+      dff count_sig[23];
   }}
   
   always {
