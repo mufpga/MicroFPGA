@@ -1,0 +1,56 @@
+module camera_trigger (
+    input clk,  // clock
+    input rst,  // reset
+    input start,
+    input camera_ready,
+    input trigger_length[16], // length of the camera trigger pulse
+    input exposure[16], // maximum of 6.5s with NM_CYCLES = 10000
+    output trigger_camera,
+    output trigger_lasers
+  ) {
+
+  // must have a falling edge detection
+  
+  const NM_CYCLES = 10000; // convert to ~100us
+  var trigger_cycle;
+  var exp_cycle;
+  
+  .clk(clk){ 
+    .rst(rst) {
+      dff sig_old; // previous camera ready flag
+      dff sig_sync[2]; // detect rising edge of the camera ready flag
+      dff counter[30]; // counter
+    }
+  }
+  
+  always {
+    trigger_cycle = trigger_length*NM_CYCLES;
+    exp_cycle = exposure*NM_CYCLES;
+  
+    // in order to detect rising edge without
+    // metastability issues, we pile up several
+    // dff and keep the previous value
+    sig_sync.d[0] = camera_ready;
+    sig_sync.d[1] = sig_sync.q[0];
+    sig_old.d = sig_sync.q[1];
+    
+    // increase counter
+    if (!&counter.q){ 
+      counter.d = counter.q + 1;
+    }
+    
+    trigger_camera = 0;
+    trigger_lasers = 0;
+    
+    if(start){ // if must generate trigger signals
+    
+      // detect rising edge
+      if(sig_old.q == 0 &&  sig_sync.q[1] == 1){ 
+        counter.d = 0; // set counter to 0
+      }
+      
+      trigger_camera = counter.q < trigger_cycle; // trigger a new exposure
+      trigger_lasers = counter.q < exp_cycle; // trigger the lasers for the exposure time
+    }
+  }
+}

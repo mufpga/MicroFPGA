@@ -28,7 +28,7 @@ module au_top (
     output ttl1,
     output ttl2,
     output ttl3,
-    output ttl4,
+    output ttl4,          // used for main trigger if activated
     output servo0,
     output servo1,
     output servo2,
@@ -60,14 +60,16 @@ module au_top (
     input vp,
     input vn
   ) {
+  
+  const USE_MAIN_TRIGGER = 0; // set to 1 in order to use the trigger
    
   // number of signals
   const NUM_LASERS = 8;
   const NUM_TTL = 5;
   const NUM_PWM = 5;
   const NUM_SERVOS = 7;
-  const NUM_ANALOG = 8;
-  
+  const NUM_ANALOG = 8; // fixed
+    
   // base addresses for each signal type
   const ADDR_MODE = 0; 
   const ADDR_DUR = NUM_LASERS; 
@@ -75,13 +77,18 @@ module au_top (
   const ADDR_TTL = ADDR_SEQ+NUM_LASERS; 
   const ADDR_SERVOS = ADDR_TTL+NUM_TTL; 
   const ADDR_PWM = ADDR_SERVOS+NUM_SERVOS; 
-  const ADDR_AI = ADDR_PWM+NUM_PWM; 
+  
+  const ADDR_START_TRIGGER = ADDR_PWM+NUM_PWM; 
+  const ADDR_CAM_TRIGGER = ADDR_START_TRIGGER+1; 
+  const ADDR_EXP_TRIGGER = ADDR_CAM_TRIGGER+1;
+  
+  const ADDR_AI = ADDR_EXP_TRIGGER+1;
 
-  const ADDR_VERSION = 100;
-  const ADDR_ID = 101;
+  const ADDR_VERSION = 200;
+  const ADDR_ID = 201;
   
   // constants returned 
-  const VERSION = 2;
+  const VERSION = 3;
   const ID = 79; // Au atomic number
   const ERROR_UNKNOW_COMMAND = 11206655; // only answer with meaningful data in the 3rd byte
     
@@ -105,6 +112,12 @@ module au_top (
       dff sequence[NUM_LASERS][16];
       dff duration[NUM_LASERS][16];
       dff mode[NUM_LASERS][3];
+      
+      // main trigger
+      camera_trigger trigger;
+      dff start_trigger;
+      dff cam_trigger_length[16]; // length of the camera trigger signal
+      dff exposure_length[16]; // length of the exposure
       
       // ttls
       dff ttl[NUM_TTL];
@@ -169,6 +182,12 @@ module au_top (
         } else if (reg.regOut.address < ADDR_PWM+NUM_PWM){           // PWM
           dutycycle.d[reg.regOut.address-ADDR_PWM] = reg.regOut.data[7:0];
           pwmupdate.d[reg.regOut.address-ADDR_PWM] = 1;
+        } else if (reg.regOut.address == ADDR_START_TRIGGER){      // Camera trigger start
+          start_trigger.d = reg.regOut.data[0];
+        } else if (reg.regOut.address == ADDR_CAM_TRIGGER){      // Camera trigger length
+          cam_trigger_length.d = reg.regOut.data[15:0];
+        } else if (reg.regOut.address == ADDR_EXP_TRIGGER){      // Exposure length
+          exposure_length.d = reg.regOut.data[15:0];
         } 
       } else { // read
          if (reg.regOut.address < ADDR_MODE+NUM_LASERS) {                // Laser modes 
@@ -192,6 +211,15 @@ module au_top (
         } else if (reg.regOut.address < ADDR_AI+NUM_ANALOG) {        // Analog input   
           reg.regIn.data = analog_out.q[reg.regOut.address-ADDR_AI];        
           reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDR_START_TRIGGER) {    // Camera trigger start
+          reg.regIn.data = start_trigger.q;      
+          reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDR_CAM_TRIGGER) {    // Camera trigger length   
+          reg.regIn.data = cam_trigger_length.q;     
+          reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDR_VERSION) {    // Camera exposure length  
+          reg.regIn.data = exposure_length.q;     
+          reg.regIn.drdy = 1;             
         } else if (reg.regOut.address == ADDR_VERSION) {    // Version    
           reg.regIn.data = VERSION; // version number      
           reg.regIn.drdy = 1;             
@@ -205,9 +233,38 @@ module au_top (
       }
     }
     
+    //////////////// TTLs
+    ttl0 = ttl.q[0];
+    ttl1 = ttl.q[1];
+    ttl2 = ttl.q[2];
+    ttl3 = ttl.q[3];
+    ttl4 = ttl.q[4];
+    
+    //////////////// main trigger (triggering camera and lasers)
+    if(USE_MAIN_TRIGGER){
+      // parameters from serial communication
+      trigger.camera_ready = camera;
+      trigger.start = start_trigger.q;
+      trigger.trigger_length = cam_trigger_length.q;
+      trigger.exposure = exposure_length.q;
+      
+      // feed the exposure signal to the lasers
+      camsync.camera = trigger.trigger_lasers;
+      l.cam_sig = NUM_LASERSx{trigger.trigger_lasers};
+      
+      // trigger camera
+      ttl4 = trigger.trigger_camera;
+    } else {
+      trigger.camera_ready = 0;
+      trigger.start = 0;
+      trigger.trigger_length = 0;
+      trigger.exposure = 0;
+      
+      camsync.camera = camera;
+      l.cam_sig = NUM_LASERSx{camera};
+    }
+    
     ///////////////// Lasers
-    camsync.camera = camera;
-    l.cam_sig = NUM_LASERSx{camera};
     l.seq = sequence.q;
     l.mod = mode.q;
     l.dura = duration.q; 
@@ -221,14 +278,7 @@ module au_top (
     laser5 = l.lasersignal[5];
     laser6 = l.lasersignal[6];
     laser7 = l.lasersignal[7];
-    
-    //////////////// TTLs
-    ttl0 = ttl.q[0];
-    ttl1 = ttl.q[1];
-    ttl2 = ttl.q[2];
-    ttl3 = ttl.q[3];
-    ttl4 = ttl.q[4];
-    
+        
     //////////////// Servos
     servo_controller.position = position.q;
     servo_sig.update = servo_sig_update.q;
