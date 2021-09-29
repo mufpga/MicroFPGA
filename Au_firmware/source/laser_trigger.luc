@@ -1,18 +1,22 @@
 /******************************************************************************
-   This module triggers a laser using a TTL signal based on processing a camera
-   triggeing in put.
-   The laser triggering module takes multiple inputs:
+   This module triggers a laser using a TTL signal based the processing of a 
+   camera triggering input.
+   
+   The laser triggering module takes multiple inputs and parameters:
    * cam_sig: camera triggering signal (high when exposing, low when registring 
               the pixel values).
-   * mode: only values 0 to 4 are considered, the modes are on, off, pulsing on 
-           camera rising edge, pulsing on camera falling edge and following the
-           camera signal.
+   * mode: only values 0 to 4 are considered, the modes are ON, OFF, pusing on 
+           camera rising edges (RISING), pulsing on camera falling edges (FALLING)
+           and following the camera signal (CAMERA).
    * duration: when the mode is set to pulsing (RISING or FALLING), the laser is 
                pulsed for <duration> us.  
    * sequence: a 16 bits sequence determining the triggering pattern of the laser.
-               On a 0, the laser will remain off during the frame. On a 1, it will
-               be triggered.
+               On a 0, the laser will remain off during the corresponding frame. 
+               On a 1, it will be triggered.
    * sync: sequence counter given by a cam_synchro module.
+   
+   Written by Joran Deschamps, EMBL (2019)
+   https://mufpga.github.io/ 
 */
 
 module laser_trigger (

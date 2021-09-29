@@ -1,6 +1,8 @@
 /******************************************************************************
    This module is based on servo.luc by Alchitry. It generates a servo signal 
    with a 20 ms period and pulses ranging from 1 ms to 2 ms.
+   
+   https://mufpga.github.io/ 
 */
 
 module servo_standard (

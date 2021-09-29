@@ -1,8 +1,12 @@
 /******************************************************************************
-   This modules takes in a camera trigger signal (high when exposing, low when
+   This module takes in a camera trigger signal (high when exposing, low when
    registering the pixel values) and increments sync at every rising edge. This
    modules effectively label the camera frames from 0 to 15. This is used to 
-   sync multiple lases and perform interleaved illuminations. 
+   synchronize multiple lasers and perform interleaved illumination. 
+   
+   Written by Joran Deschamps, EMBL (2019)
+   https://mufpga.github.io/ 
+   GPL-3.0 License  
 */
 
 module cam_synchro (
