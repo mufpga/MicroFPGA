@@ -6,6 +6,7 @@
    
    Written by Joran Deschamps, EMBL (2019)
    https://mufpga.github.io/ 
+   GPL-3.0 License  
 */
 
 module cam_synchro (
