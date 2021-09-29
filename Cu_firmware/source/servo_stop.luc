@@ -1,8 +1,12 @@
 /******************************************************************************
-   This module takes a servo signal input (PWM) and shuts it down after each
-   update 10 seconds later. The goal is to avoid vibrations from the servos on 
-   the optical table.
+   This module takes a servo signal input (PWM) and shuts it down 10 seconds 
+   later in order to avoid vibrations on the optical table.
+   
+   Written by Joran Deschamps, EMBL (2019)
+   https://mufpga.github.io/ 
+   GPL-3.0 License  
 */
+
 module servo_stop (
     input clk,  // clock
     input rst,  // reset

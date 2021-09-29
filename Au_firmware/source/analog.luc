@@ -1,10 +1,14 @@
 /******************************************************************************
-  This modules reads the 9 aux analog channels available on the Au in a loop
-  and updates the output signal. First it waits for the conversion signal to 
-  go up, then in the READ_NEXT state it waits for the drdy signal to be up, 
-  stores the value in a dff array and increment the address.
+   This module sequentially reads the 9 aux analog channels available on the Au
+   and updates the output signal. It waits for the ADC conversion signal to 
+   go up, then reads the next signal value and stores it in an array. Finally
+   it increments the address of the channel to be read.
    
-  Vp/Vn is currently unused.
+   Vp/Vn is currently unused.
+     
+   Written by Joran Deschamps, EMBL (2019)
+   https://mufpga.github.io/ 
+   GPL-3.0 License  
 */
 
 
@@ -40,19 +44,18 @@ module analog (
   const ADDR = {31,30,29,28,23,22,21,20};
   const NUM_AI = 8;
   
-  .clk(clk){ 
- 
-    //fsm state = {IDLE, READ_NEXT};
-  
+  .clk(clk){   
     .rst(rst) {
-      dff sigs[NUM_AI][16];
-      dff sigs2[NUM_AI][16];
-      dff counter[4];
+      dff sigs[NUM_AI][16]; // hold the signals value
+      dff sigs2[NUM_AI][16]; // 2nd flip-flop array for the output
+      dff counter[4]; // cycle through the addresses
   }}
   
   xadc_wiz_0 xadc;
   
   always {
+  
+    // link ADC inputs
     xadc.vp_in = vp;
     xadc.vn_in = vn;
     xadc.vauxp4 = vp0;
@@ -76,16 +79,20 @@ module analog (
     xadc.den_in = xadc.eoc_out; // read the register when the conversion is done
     xadc.di_in = 0; 
     xadc.dwe_in = 0; // only perform reads
-    
-    xadc.daddr_in = ADDR[counter.q]; // use array to hold address
+ 
+    // while ADC not ready, simply hold the value
     sigs.d = sigs.q;
-    counter.d = counter.q;    
+    counter.d = counter.q; 
+    
+    // use array and counter to pass the address currently being read
+    xadc.daddr_in = ADDR[counter.q]; 
       
     if(xadc.drdy_out){ // if ready to be read
       sigs.d[counter.q] = xadc.do_out; // read signal
       counter.d = counter.q+1; // increase counter
     }
-    
+
+    // reset counter when it reaches the maximum value of channels
     if(counter.q == NUM_AI){
       counter.d = 0;
     }

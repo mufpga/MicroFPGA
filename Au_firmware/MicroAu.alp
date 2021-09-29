@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="MicroAu" board="Alchitry Au" language="Lucid" version="3">
   <files>
+    <src>camera_trigger.luc</src>
     <component>reg_interface.luc</component>
     <component>reset_conditioner.luc</component>
     <src>cam_synchro.luc</src>
@@ -14,7 +15,6 @@
     <src>servo_standard.luc</src>
     <src>laser_trigger.luc</src>
     <component>uart_rx.luc</component>
-    <src>camera_trigger.luc</src>
     <src top="true">au_top.luc</src>
     <component>uart_tx.luc</component>
     <constraint lib="true">au.xdc</constraint>
