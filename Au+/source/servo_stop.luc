@@ -1,0 +1,36 @@
+/******************************************************************************
+   This module takes a servo signal input (PWM) and shuts it down 10 seconds 
+   later in order to avoid vibrations on the optical table.
+   
+   Written by Joran Deschamps, EMBL (2019)
+   https://mufpga.github.io/ 
+   GPL-3.0 License  
+*/
+
+module servo_stop (
+    input clk,  // clock
+    input rst,  // reset
+    input signal_in,
+    input update,
+    output signal_out
+  ) {
+
+  .clk(clk){ 
+    .rst(rst) {
+      dff count_sig[30]; // count until ~ 10 sec @ 100MHz
+  }}
+  
+  always {
+  
+    if (update){ // restart counter
+      count_sig.d = 0;
+    }
+    
+    if (!&count_sig.q){  // while counter is not maxed out
+      count_sig.d = count_sig.q + 1;
+    }
+    
+    signal_out = signal_in && !&count_sig.q; // shuts down signal after 10 sec
+  
+  }
+}

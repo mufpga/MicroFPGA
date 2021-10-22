@@ -1,0 +1,39 @@
+/******************************************************************************
+   This module takes in a camera trigger signal (high when exposing, low when
+   registering the pixel values) and increments sync at every rising edge. This
+   modules effectively label the camera frames from 0 to 15. This is used to 
+   synchronize multiple lasers and perform interleaved illumination. 
+   
+   Written by Joran Deschamps, EMBL (2019)
+   https://mufpga.github.io/ 
+   GPL-3.0 License  
+*/
+
+module signal_sync (
+    input clk,  // clock
+    input rst,  // reset
+    input camera,
+    output sync[4]
+  ) {
+
+  .clk(clk){ 
+    .rst(rst) {
+      dff sync_count[4];
+      dff sig_sync[2];
+      dff sig_old;
+  }}
+  
+  always {    
+    sig_sync.d[0] = camera;
+    sig_sync.d[1] = sig_sync.q[0];
+    sig_old.d = sig_sync.q[1];
+    
+    
+    if(sig_old.q == 0 &&  sig_sync.q[1] == 1){
+      sync_count.d = sync_count.q+1;
+    }
+    
+    sync = sync_count.q; 
+    
+  }
+}

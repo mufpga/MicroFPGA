@@ -1,0 +1,104 @@
+/******************************************************************************
+   This module sequentially reads the 9 aux analog channels available on the Au
+   and updates the output signal. It waits for the ADC conversion signal to 
+   go up, then reads the next signal value and stores it in an array. Finally
+   it increments the address of the channel to be read.
+   
+   Vp/Vn is currently unused.
+     
+   Written by Joran Deschamps, EMBL (2019)
+   https://mufpga.github.io/ 
+   GPL-3.0 License  
+*/
+
+
+module analog (
+    input clk,  // clock
+    input rst,  // reset
+    input vp0,
+    input vn0,
+    input vp1,
+    input vn1,
+    input vp2,
+    input vn2,
+    input vp3,
+    input vn3,
+    input vp4,
+    input vn4,
+    input vp5,
+    input vn5,
+    input vp6,
+    input vn6,
+    input vp7,
+    input vn7,
+    input vp,
+    input vn,
+    output signals[8][16]
+  ) {
+  
+  // for addresses, see Xilinx 7 Series FPGAs XADC documentation, page 38
+  // signals defined in xadc.xdc
+  // channels: vaux15, vaux14, vaux13, vaux12, vaux7, vaux6, vaux5, vaux4
+  // addresses: 6h1f, 6h1e, 6h1d, 6h1c, 6h17, 6h16, 6h15, 6h14
+  // pins (Br): B3/B2, B6/B5, B27/B28, B21/B20, B48/B49, B45/B46, B18/B17, B24/B23
+  const ADDR = {31,30,29,28,23,22,21,20};
+  const NUM_AI = 8;
+  
+  .clk(clk){   
+    .rst(rst) {
+      dff sigs[NUM_AI][16]; // hold the signals value
+      dff sigs2[NUM_AI][16]; // 2nd flip-flop array for the output
+      dff counter[4]; // cycle through the addresses
+  }}
+  
+  xadc_wiz_0 xadc;
+  
+  always {
+  
+    // link ADC inputs
+    xadc.vp_in = vp;
+    xadc.vn_in = vn;
+    xadc.vauxp4 = vp0;
+    xadc.vauxn4 = vn0;
+    xadc.vauxp5 = vp1;
+    xadc.vauxn5 = vn1;
+    xadc.vauxp6 = vp2;
+    xadc.vauxn6 = vn2;
+    xadc.vauxp7 = vp3;
+    xadc.vauxn7 = vn3;
+    xadc.vauxp12 = vp4;
+    xadc.vauxn12 = vn4;
+    xadc.vauxp13 = vp5;
+    xadc.vauxn13 = vn5;
+    xadc.vauxp14 = vp6;
+    xadc.vauxn14 = vn6;
+    xadc.vauxp15 = vp7;
+    xadc.vauxn15 = vn7;
+    
+    xadc.dclk_in = clk;
+    xadc.den_in = xadc.eoc_out; // read the register when the conversion is done
+    xadc.di_in = 0; 
+    xadc.dwe_in = 0; // only perform reads
+ 
+    // while ADC not ready, simply hold the value
+    sigs.d = sigs.q;
+    counter.d = counter.q; 
+    
+    // use array and counter to pass the address currently being read
+    xadc.daddr_in = ADDR[counter.q]; 
+      
+    if(xadc.drdy_out){ // if ready to be read
+      sigs.d[counter.q] = xadc.do_out; // read signal
+      counter.d = counter.q+1; // increase counter
+    }
+
+    // reset counter when it reaches the maximum value of channels
+    if(counter.q == NUM_AI){
+      counter.d = 0;
+    }
+    
+    // use two stacks of flip-flops for metastability purposes
+    sigs2.d = sigs.q;
+    signals = sigs2.q;
+  }
+}

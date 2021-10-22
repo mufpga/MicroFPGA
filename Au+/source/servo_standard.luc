@@ -1,0 +1,47 @@
+/******************************************************************************
+   This module is based on servo.luc by Alchitry. It generates a servo signal 
+   with a 20 ms period and pulses ranging from 1 ms to 2 ms.
+   
+   Written by Joran Deschamps, EMBL (2019)
+   https://mufpga.github.io/ 
+   GPL-3.0 License  
+*/
+
+module servo_standard (
+    input clk,                  // clock
+    input rst,                  // reset
+    input position[16], // servo position
+    output servo                // servo output
+  ) {
+  
+  const CLOCK_FREQ = 100000; // Clock frequency (kHz = ms^-1)
+  const MIN_T = 1; // min pulse (ms)  
+  const MAX_T = 2; // max pulse (ms)  
+  const PERIOD = 20; // period (ms)  
+  
+  // Number of cycles
+  const MIN_C = CLOCK_FREQ * MIN_T;
+  const MAX_C = CLOCK_FREQ * MAX_T;
+  const PERIOD_C = CLOCK_FREQ * PERIOD;
+
+  .clk(clk), .rst(rst) {
+    dff pos[16];    // buffer for input
+    dff ctr[$clog2(PERIOD_C)];   // counter for PWM
+  }
+  
+  always {
+    ctr.d = ctr.q + 1;      // increment the counter
+    
+    if (ctr.q == PERIOD_C - 1) { // if the counter overflowed
+      if((position << 1) > MAX_C-MIN_C)
+        pos.d = MAX_C-MIN_C >> 1;
+      else
+        pos.d = position;
+      
+      ctr.d = 0;
+    }
+    
+    // PWM output
+    servo = (pos.q << 1) + MIN_C > ctr.q;
+  }
+}
