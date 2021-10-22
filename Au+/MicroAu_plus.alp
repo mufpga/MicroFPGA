@@ -4,10 +4,9 @@
     <component>reg_interface.luc</component>
     <component>reset_conditioner.luc</component>
     <src>servo_stop.luc</src>
-    <src>camera_trigger.luc</src>
     <component>pwm.luc</component>
     <component>counter.luc</component>
-    <src>signal_sync.luc</src>
+    <src>cam_synchro.luc</src>
     <component>simple_dual_ram.v</component>
     <component>spi_peripheral.luc</component>
     <src>laser_trigger.luc</src>
