@@ -1,0 +1,59 @@
+module camera_trigger (
+    input clk,  // clock
+    input rst,  // reset
+    input start,
+    input trigger_pulse[16], // pulse length of the camera trigger
+    input trigger_period[16], // period of the camera trigger
+    input trigger_exposure[16], // exposure of a camera frame (for the lasers)
+    output trigger_camera,
+    output trigger_lasers
+  ) {
+
+  // 16 bits -> maximum of 6.5s with NM_CYCLES = 10000
+  const NM_CYCLES = 10000; // convert to ~100us
+  var pulse_cycle;
+  var period_cycle;
+  var exposure_cycle;
+  
+  .clk(clk){ 
+    .rst(rst) {
+      // If x is the number of bits of trigger_length/trigger_delay/exposure
+      // i.e. Nbits(trigger_length) = x
+      // Then, we must have Nbits(counter) > log2((2^x-1)*NM_COUNTER+1)
+      // For x=16 and NM_CYCLES = 10000, it yields Nbits(counter) > 29.3
+      dff counter[30]; // cycles counter
+      dff imaging[2];
+    }
+  }
+  
+  always {
+    pulse_cycle = trigger_pulse*NM_CYCLES;
+    period_cycle = trigger_period*NM_CYCLES;
+    exposure_cycle = trigger_exposure*NM_CYCLES;
+    
+    // increase counter until it maxes out
+    if (!&counter.q){ 
+      counter.d = counter.q + 1;
+    }
+    
+    // set signals off when not imaging
+    //trigger_camera = 0;
+    //trigger_lasers = 0;
+    
+    // imaging signal (simulates camera ready signal)
+    imaging.d[0] = counter.q < period_cycle && start;
+    imaging.d[1] = imaging.q[0];
+    //imaging.d[2] = imaging.q[1];
+            
+    // detect rising edge of imaging signal: start a new frame
+    if(imaging.q[1] == 0 &&  imaging.q[0] == 1){ 
+      counter.d = 0; // set counter to 0, restart pulses
+    }
+      
+    // trigger a new exposure
+    trigger_camera = counter.q < pulse_cycle && imaging.q[1];
+      
+    // trigger the lasers
+    trigger_lasers = counter.q < exposure_cycle && imaging.q[1];
+  }
+}
