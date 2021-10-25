@@ -19,10 +19,9 @@ module camera_trigger (
     .rst(rst) {
       // If x is the number of bits of trigger_length/trigger_delay/exposure
       // i.e. Nbits(trigger_length) = x
-      // Then, we must have Nbits(counter) > log2((2^x-1)*NM_COUNTER+1)
+      // Then, we must have Nbits(counter) > log2((2^x-1)*NM_CYCLES+1)
       // For x=16 and NM_CYCLES = 10000, it yields Nbits(counter) > 29.3
       dff counter[30]; // cycles counter
-      dff imaging[2];
     }
   }
   
@@ -33,29 +32,16 @@ module camera_trigger (
     
     // increase counter until it maxes out
     if (!&counter.q){ 
-      counter.d = counter.q + 1;
+    counter.d = counter.q + 1;
     }
     
-    // set signals off when not imaging
-    //trigger_camera = 0;
-    //trigger_lasers = 0;
-    
-    // imaging signal (simulates camera ready signal)
-    imaging.d[0] = counter.q < period_cycle && start;
-    imaging.d[1] = imaging.q[0];
-    //imaging.d[2] = imaging.q[1];
-    
-    // if(start){
-        
-    // detect rising edge of imaging signal: start a new frame
-    if(imaging.q[1] == 0 &&  imaging.q[0] == 1){ 
-      counter.d = 0; // set counter to 0, restart pulses
+    // reset counter every period
+    if (counter.q >= period_cycle && start){
+      counter.d = 0;
     }
-      
-    // trigger a new exposure
-    trigger_camera = counter.q < pulse_cycle && imaging.q[1];
-      
-    // trigger the lasers
-    trigger_lasers = counter.q < exposure_cycle && imaging.q[1];
+    
+    // set output signals
+    trigger_camera = counter.q < pulse_cycle;
+    trigger_lasers = counter.q < exposure_cycle;    
   }
 }

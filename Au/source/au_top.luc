@@ -18,7 +18,8 @@ module au_top (
     output led [8],         // 8 user controllable LEDs
     input usb_rx,           // USB->Serial input
     output usb_tx,           // USB->Serial output
-    input camera,
+    input camera_in,
+    output camera_out,
     output laser0,
     output laser1,
     output laser2,
@@ -31,7 +32,6 @@ module au_top (
     output ttl1,
     output ttl2,
     output ttl3,
-    output ttl4,          // used for main trigger if activated
     output servo0,
     output servo1,
     output servo2,
@@ -66,7 +66,7 @@ module au_top (
      
   // number of signals
   const NUM_LASERS = 8;
-  const NUM_TTL = 5;
+  const NUM_TTL = 4;
   const NUM_PWM = 5;
   const NUM_SERVOS = 7;
   const NUM_ANALOG = 8; // fixed
@@ -79,19 +79,18 @@ module au_top (
   const ADDR_SERVOS = ADDR_TTL+NUM_TTL; // 29
   const ADDR_PWM = ADDR_SERVOS+NUM_SERVOS; // 36
   
-  const ADDR_START_TRIGGER = ADDR_PWM+NUM_PWM; // 41
-  const ADDR_CAM_PULSE = ADDR_START_TRIGGER+1; // 42
-  const ADDR_CAM_PERIOD = ADDR_CAM_PULSE+1; // 43
-  const ADDR_CAM_EXPO = ADDR_CAM_PERIOD+1; // 44
+  const ADDR_ACTIVE_TRIGGER = ADDR_PWM+NUM_PWM; // 41
+  const ADDR_START_TRIGGER = ADDR_ACTIVE_TRIGGER+1; // 42
+  const ADDR_CAM_PULSE = ADDR_START_TRIGGER+1; // 43
+  const ADDR_CAM_PERIOD = ADDR_CAM_PULSE+1; // 44
+  const ADDR_CAM_EXPO = ADDR_CAM_PERIOD+1; // 45
   
-  const ADDR_AI = ADDR_CAM_EXPO+1;// 45
+  const ADDR_AI = ADDR_CAM_EXPO+1;// 46
 
   const ADDR_VERSION = 200;
   const ADDR_ID = 201;
-  const ADDR_TRIGGER_MODE = 202; // whether it uses main trigger
   
   // constants returned
-  const USE_MAIN_TRIGGER = 1; // set to 1 in order to trigger the camera 
   const VERSION = 3;  
   const ID = 79; // Au atomic number
   const ERROR_UNKNOW_COMMAND = 11206655; // only answer with meaningful data in the 3rd byte
@@ -119,6 +118,7 @@ module au_top (
       
       // main trigger
       camera_trigger trigger;
+      dff active_trigger;
       dff start_trigger;
       dff cam_pulse[16]; // pulse length of the camera trigger signal
       dff cam_period[16]; // period of the camera trigger signal
@@ -187,6 +187,8 @@ module au_top (
         } else if (reg.regOut.address < ADDR_PWM+NUM_PWM){           // PWM
           dutycycle.d[reg.regOut.address-ADDR_PWM] = reg.regOut.data[7:0];
           pwmupdate.d[reg.regOut.address-ADDR_PWM] = 1;
+        } else if (reg.regOut.address == ADDR_ACTIVE_TRIGGER){      // Active/passive camera trigger
+          active_trigger.d = reg.regOut.data[0];
         } else if (reg.regOut.address == ADDR_START_TRIGGER){      // Camera trigger start
           start_trigger.d = reg.regOut.data[0];
         } else if (reg.regOut.address == ADDR_CAM_PULSE){      // Camera trigger length
@@ -215,6 +217,9 @@ module au_top (
         } else if (reg.regOut.address < ADDR_PWM+NUM_PWM){           // PWM
           reg.regIn.data = dutycycle.q[reg.regOut.address-ADDR_PWM];        
           reg.regIn.drdy = 1;     
+        } else if (reg.regOut.address == ADDR_ACTIVE_TRIGGER) {    // Active/passive camera trigger
+          reg.regIn.data = active_trigger.q;      
+          reg.regIn.drdy = 1;             
         } else if (reg.regOut.address == ADDR_START_TRIGGER) {    // Camera trigger start
           reg.regIn.data = start_trigger.q;      
           reg.regIn.drdy = 1;             
@@ -236,9 +241,6 @@ module au_top (
         } else if (reg.regOut.address == ADDR_ID) {    // ID   
           reg.regIn.data = ID; // id    
           reg.regIn.drdy = 1;             
-        } else if (reg.regOut.address == ADDR_TRIGGER_MODE) {    // Trigger mode   
-          reg.regIn.data = USE_MAIN_TRIGGER; // id    
-          reg.regIn.drdy = 1;             
         } else { // Error
           reg.regIn.data = ERROR_UNKNOW_COMMAND;        
           reg.regIn.drdy = 1; 
@@ -251,10 +253,13 @@ module au_top (
     ttl1 = ttl.q[1];
     ttl2 = ttl.q[2];
     ttl3 = ttl.q[3];
-    ttl4 = ttl.q[4];
     
     //////////////// main trigger (triggering camera and lasers)
-    if(USE_MAIN_TRIGGER){
+    
+    // report trigger mode on LED
+    led[7] = active_trigger.q;    
+    
+    if(active_trigger.q){ // active trigger: the FPGA triggers both camera and lasers
       // parameters from serial communication
       trigger.start = start_trigger.q;
       trigger.trigger_pulse = cam_pulse.q;
@@ -266,15 +271,29 @@ module au_top (
       l.cam_sig = NUM_LASERSx{trigger.trigger_lasers};
       
       // trigger camera
-      ttl4 = trigger.trigger_camera;
-    } else {
+      camera_out = trigger.trigger_camera;
+      
+      led[0] = start_trigger.q;
+      led[1] = trigger.trigger_camera;
+      led[2] = trigger.trigger_lasers;
+      led[3] = l.lasersignal[0];
+      led[4] = l.lasersignal[1];
+      led[5] = l.lasersignal[2];
+      led[6] = l.lasersignal[2]; 
+      
+    } else { // passive trigger: external camera triggers the FPGA/lasers
+    
       trigger.start = 0;
       trigger.trigger_pulse = 16x{0};
       trigger.trigger_period = 16x{0};
       trigger.trigger_exposure = 16x{0};
       
-      camsync.camera = camera;
-      l.cam_sig = NUM_LASERSx{camera};
+      camera_out = 0;
+      
+      camsync.camera = camera_in;
+      l.cam_sig = NUM_LASERSx{camera_in};
+      
+      led[2:0] = 3x{1};
     }
     
     ///////////////// Lasers
@@ -291,7 +310,7 @@ module au_top (
     laser5 = l.lasersignal[5];
     laser6 = l.lasersignal[6];
     laser7 = l.lasersignal[7];
-        
+            
     //////////////// Servos
     servo_controller.position = position.q;
     servo_sig.update = servo_sig_update.q;
