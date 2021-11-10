@@ -1,3 +1,36 @@
+/******************************************************************************
+   This module generates two TTL signals intended at triggering a camera and 
+   lasers. The camera trigger output can be used directly to trigger a camera,
+   while the laser trigger output can be processed by a laser_trigger module.
+   
+   It takes several parameters:
+   * start: the output signals are only generated when start is HIGH, they are 
+           0 otherwise.
+   * trigger_pulse: pulse length of the camera trigger signal.
+   * trigger_period: pulse period of the camera trigger signal.
+   * trigger_exposure: pulse length of the laser trigger signal.
+      
+   Outputs:
+   * trigger_camera: camera trigger signal.
+   * trigger_lasers: laser trigger signal, intended to be fed to a laser_trigger
+                     module.
+   
+   Example: 
+               <-------------period------------>
+               <-pulse->
+               ---------                        ---------      high    
+              |         |                      |         |
+   camera -----         ------------------------         ----- low
+   
+               <---------exposure--------->
+               ----------------------------     -------------- high
+              |                           |     |        
+   laser  -----                            -----               low
+   
+   Written by Joran Deschamps, EMBL (2021)
+   https://mufpga.github.io/ 
+   GPL-3.0 License  
+*/
 module camera_trigger (
     input clk,  // clock
     input rst,  // reset
