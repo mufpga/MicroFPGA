@@ -9,6 +9,8 @@
    * trigger_pulse: pulse length of the camera trigger signal.
    * trigger_period: pulse period of the camera trigger signal.
    * trigger_exposure: pulse length of the laser trigger signal.
+   * trigger_delay: delay of the laser trigger signal with respect to the camera 
+                   trigger.
       
    Outputs:
    * trigger_camera: camera trigger signal.
@@ -22,10 +24,11 @@
               |         |                      |         |
    camera -----         ------------------------         ----- low
    
-               <---------exposure--------->
-               ----------------------------     -------------- high
-              |                           |     |        
-   laser  -----                            -----               low
+                 <---------exposure--------->
+                  ---------------------------      ----------- high
+                 |                           |    |        
+   laser  --------                           ------            low
+              <->delay
    
    Written by Joran Deschamps, EMBL (2021)
    https://mufpga.github.io/ 
@@ -43,9 +46,9 @@ module camera_trigger (
     output trigger_lasers
   ) {
 
-  // 16 bits -> maximum of 6.5s with NM_CYCLES = 10000
-  const NM_CYCLES = 10000; // convert to NM_CYCLES*1e-8 = ~100 us
-  const DELAY_CYCLES = 100; // ~1 us
+  // 16 bits -> maximum of 6.5s with NM_CYCLES = 10000, since clock cycle = 100MHz
+  const NM_CYCLES = 10000; // convert to NM_CYCLES x 1e-8 = ~100 us
+  const DELAY_CYCLES = 1000; // ~10 us
   var pulse_cycle;
   var period_cycle;
   var exposure_cycle;
@@ -54,11 +57,12 @@ module camera_trigger (
   .clk(clk){ 
     .rst(rst) {
       // If x is the number of bits of trigger_length/trigger_delay/exposure
-      // i.e. Nbits(trigger_length) = x
-      // Then, we must have Nbits(counter) > log2((2^x-1)*NM_CYCLES+1)
-      // For x=16 and NM_CYCLES = 10000, it yields Nbits(counter) > 29.3
+      // i.e. Nbits(trigger_length) = X
+      // Then, we must have Nbits(counter) > log2((2^X-1)*NM_CYCLES+1)
+      // For X=16 and NM_CYCLES = 10000, it yields Nbits(counter) > 29.3
+      // For X=16 and DELAY_CYCLES = 1000, it yields Nbits(counter) > 25.9
       dff counter[30]; // cycles counter
-      dff delay_counter[30]; // delay counter
+      dff delay_counter[26]; // delay counter
     }
   }
   
@@ -84,6 +88,6 @@ module camera_trigger (
     
     // set output signals
     trigger_camera = counter.q < pulse_cycle;
-    trigger_lasers = delay_counter.q > delay_cycle && counter.q < exposure_cycle;    
+    trigger_lasers = delay_counter.q > delay_cycle && counter.q < delay_cycle+exposure_cycle;    
   }
 }

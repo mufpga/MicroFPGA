@@ -37,7 +37,7 @@ module laser_trigger (
   const FALLING = 3;
   const FOLLOW = 4;
   
-  const NM_CYCLES = 100; // convert to ~us
+  const NM_CYCLES = 100; // convert to ~us since NM_CYCLES x 1e-8 = 1e-6
   var plength;
     
  .clk(clk){ 
