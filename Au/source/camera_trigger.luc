@@ -27,7 +27,7 @@
                  <---------exposure--------->
                   ---------------------------      ----------- high
                  |                           |    |        
-   laser  --------                           ------            low
+   exposure ------                           ------            low
               <->delay
    
    Written by Joran Deschamps, EMBL (2021)
