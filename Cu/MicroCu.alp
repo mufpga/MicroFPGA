@@ -6,15 +6,15 @@
     <component>pwm.luc</component>
     <component>counter.luc</component>
     <component>spi_peripheral.luc</component>
+    <src>signal_sync.luc</src>
+    <src>servo_standard.luc</src>
     <component>cclk_detector.luc</component>
     <component>uart_rx.luc</component>
     <src>servo_stop.luc</src>
     <src>laser_trigger.luc</src>
-    <src>camera_trigger.luc</src>
-    <src>signal_sync.luc</src>
-    <component>uart_tx.luc</component>
     <src top="true">cu_top.luc</src>
-    <src>servo_standard.luc</src>
+    <src>camera_trigger.luc</src>
+    <component>uart_tx.luc</component>
     <constraint>user.acf</constraint>
     <constraint lib="true">alchitry.acf</constraint>
   </files>
