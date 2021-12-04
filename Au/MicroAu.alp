@@ -3,12 +3,13 @@
   <files>
     <component>reg_interface.luc</component>
     <component>reset_conditioner.luc</component>
+    <src>camera_trigger.luc</src>
     <component>pwm.luc</component>
     <src>analog.luc</src>
     <component>counter.luc</component>
     <component>simple_dual_ram.v</component>
     <component>spi_peripheral.luc</component>
-    <src>cam_synchro.luc</src>
+	<src>signal_sync.luc</src>
     <src>servo_standard.luc</src>
     <component>cclk_detector.luc</component>
     <src top="true">au_top.luc</src>

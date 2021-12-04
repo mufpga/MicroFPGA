@@ -1,0 +1,47 @@
+module camera_trigger (
+    input clk,  // clock
+    input rst,  // reset
+    input start,
+    input trigger_pulse[16], // pulse length of the camera trigger
+    input trigger_period[16], // period of the camera trigger
+    input trigger_exposure[16], // exposure of a camera frame (for the lasers)
+    output trigger_camera,
+    output trigger_lasers
+  ) {
+
+  // 16 bits -> maximum of 6.5s with NM_CYCLES = 10000
+  const NM_CYCLES = 10000; // convert to ~100us
+  var pulse_cycle;
+  var period_cycle;
+  var exposure_cycle;
+  
+  .clk(clk){ 
+    .rst(rst) {
+      // If x is the number of bits of trigger_length/trigger_delay/exposure
+      // i.e. Nbits(trigger_length) = x
+      // Then, we must have Nbits(counter) > log2((2^x-1)*NM_CYCLES+1)
+      // For x=16 and NM_CYCLES = 10000, it yields Nbits(counter) > 29.3
+      dff counter[30]; // cycles counter
+    }
+  }
+  
+  always {
+    pulse_cycle = trigger_pulse*NM_CYCLES;
+    period_cycle = trigger_period*NM_CYCLES;
+    exposure_cycle = trigger_exposure*NM_CYCLES;
+    
+    // increase counter until it maxes out
+    if (!&counter.q){ 
+    counter.d = counter.q + 1;
+    }
+    
+    // reset counter every period
+    if (counter.q >= period_cycle && start){
+      counter.d = 0;
+    }
+    
+    // set output signals
+    trigger_camera = counter.q < pulse_cycle;
+    trigger_lasers = counter.q < exposure_cycle;    
+  }
+}

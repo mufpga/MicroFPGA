@@ -9,7 +9,7 @@
    GPL-3.0 License  
 */
 
-module cam_synchro (
+module signal_sync (
     input clk,  // clock
     input rst,  // reset
     input camera,
