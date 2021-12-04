@@ -93,7 +93,7 @@ module au_plus_top (
   
   // constants returned
   const VERSION = 3;  
-  const ID = 79; // Au atomic number
+  const ID = 80; // Au atomic number
   const ERROR_UNKNOW_COMMAND = 11206655; // only answer with meaningful data in the 3rd byte
     
   sig rst;  // reset signal
