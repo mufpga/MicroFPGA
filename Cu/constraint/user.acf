@@ -1,4 +1,5 @@
-pin camera C9;
+pin camera_in C9;
+pin camera_out A5;
 
 pin laser0 C3;
 pin laser1 C2;
@@ -13,7 +14,7 @@ pin ttl0 A27;
 pin ttl1 A28;
 pin ttl2 A9;
 pin ttl3 A8;
-pin ttl4 A5;
+			
 
 pin servo0 A2;
 pin servo1 A3;

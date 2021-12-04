@@ -111,7 +111,7 @@ module au_top (
           
       // lasers
       laser_trigger l[NUM_LASERS];
-      signal_sync camsync; // to synchronize all lasers on the same frame counter
+      signal_sync framesync; // to synchronize all lasers on the same frame counter
       
       dff sequence[NUM_LASERS][16];
       dff duration[NUM_LASERS][16];
@@ -275,7 +275,7 @@ module au_top (
       trigger.trigger_delay = laser_delay.q;
       
       // feed the exposure signal to the lasers
-      camsync.camera = trigger.trigger_lasers; // inter-laser sync module
+      framesync.camera = trigger.trigger_lasers; // inter-laser sync module
       l.cam_sig = NUM_LASERSx{trigger.trigger_lasers};
       
       // trigger camera
@@ -299,7 +299,7 @@ module au_top (
       
       camera_out = 0;
       
-      camsync.camera = camera_in;
+      framesync.camera = camera_in;
       l.cam_sig = NUM_LASERSx{camera_in};
       
       led[2:0] = 3x{1};
@@ -309,7 +309,7 @@ module au_top (
     l.seq = sequence.q;
     l.mod = mode.q;
     l.dura = duration.q; 
-    l.sync = NUM_LASERSx{{camsync.sync}};
+    l.sync = NUM_LASERSx{{framesync.sync}};
     
     laser0 = l.lasersignal[0]; // laser trigger outputs
     laser1 = l.lasersignal[1];
