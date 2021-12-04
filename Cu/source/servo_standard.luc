@@ -6,6 +6,7 @@
    https://mufpga.github.io/ 
    GPL-3.0 License  
 */
+
 module servo_standard (
     input clk,                  // clock
     input rst,                  // reset

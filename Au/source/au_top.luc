@@ -1,6 +1,6 @@
 /**********************************************************************************
    MicroFPGA configuration for the Au board. It controls by default the triggering 
-   of 8 lasers (from a camera signal), 5 PWM signals, 7 servos, 5 TTL outputs and 8
+   of 8 lasers (from a camera signal), 5 PWM signals, 7 servos, 4 TTL outputs and 8
    analog input channels.
          
    Visit https://mufpga.github.io/ for the documentation and guide to using MicroFPGA,
@@ -107,7 +107,6 @@ module au_top (
       uart_tx tx (#BAUD(57600), #CLK_FREQ(100000000)); // serial transmitter
       
       reg_interface reg;
-      //reg_interface_debug reg;
           
       // lasers
       laser_trigger l[NUM_LASERS];
@@ -172,7 +171,7 @@ module au_top (
     
     /////////////////////////////////////////////////////////
     /// Communication based on the register interface
-    /// (see Alchitry Lucid tutorials for the Mojo) 
+    /// (see Alchitry Lucid tutorials) 
     if (reg.regOut.new_cmd) { // new command
       if (reg.regOut.write) { // if write
         if (reg.regOut.address < ADDR_MODE+NUM_LASERS) {         // Laser modes  
@@ -305,7 +304,7 @@ module au_top (
       led[2:0] = 3x{1};
     }
     
-    ///////////////// Lasers
+    ///////////////// Lasers	 
     l.seq = sequence.q;
     l.mod = mode.q;
     l.dura = duration.q; 

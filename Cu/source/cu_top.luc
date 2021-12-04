@@ -1,6 +1,6 @@
 /**********************************************************************************
    MicroFPGA configuration for the Cu board. It controls by default the triggering 
-   of 8 lasers (from a camera signal), 5 PWM signals, 7 servos and 5 TTL outputs.
+   of 8 lasers (from a camera signal), 5 PWM signals, 7 servos and 4 TTL outputs.
          
    Visit https://mufpga.github.io/ for the documentation and guide to using MicroFPGA,
    in Micro-Manager, Python, Java and LabView, as well as details of complementary
@@ -17,7 +17,8 @@ module cu_top (
     output led [8],         // 8 user controllable LEDs
     input usb_rx,           // USB->Serial input
     output usb_tx,           // USB->Serial output 
-    input camera,
+    input camera_in,
+    output camera_out,
     output laser0,
     output laser1,
     output laser2,
@@ -30,7 +31,6 @@ module cu_top (
     output ttl1,
     output ttl2,
     output ttl3,
-    output ttl4,
     output servo0,
     output servo1,
     output servo2,
@@ -47,26 +47,33 @@ module cu_top (
   
   // number of signals
   const NUM_LASERS = 8;
-  const NUM_TTL = 5;
+  const NUM_TTL = 4;
   const NUM_PWM = 5;
   const NUM_SERVOS = 7;
   
   // base addresses for each signal type
   const ADDR_MODE = 0; 
-  const ADDR_DUR = NUM_LASERS; 
-  const ADDR_SEQ = ADDR_DUR+NUM_LASERS; 
-  const ADDR_TTL = ADDR_SEQ+NUM_LASERS; 
-  const ADDR_SERVOS = ADDR_TTL+NUM_TTL; 
-  const ADDR_PWM = ADDR_SERVOS+NUM_SERVOS; 
+  const ADDR_DUR = NUM_LASERS; // 8
+  const ADDR_SEQ = ADDR_DUR+NUM_LASERS; // 16
+  const ADDR_TTL = ADDR_SEQ+NUM_LASERS; // 24
+  const ADDR_SERVOS = ADDR_TTL+NUM_TTL; // 29
+  const ADDR_PWM = ADDR_SERVOS+NUM_SERVOS; // 36
   
-  const VERSION = 2;
-  const ID = 29; // Cu atomic number
+  const ADDR_ACTIVE_TRIGGER = ADDR_PWM+NUM_PWM; // 41
+  const ADDR_START_TRIGGER = ADDR_ACTIVE_TRIGGER+1; // 42
+  const ADDR_CAM_PULSE = ADDR_START_TRIGGER+1; // 43
+  const ADDR_CAM_PERIOD = ADDR_CAM_PULSE+1; // 44
+  const ADDR_CAM_EXPO = ADDR_CAM_PERIOD+1; // 45
+  const ADDR_LASER_DELAY = ADDR_CAM_EXPO+1; // 46
+  
+  const ADDR_VERSION = 200;
+  const ADDR_ID = 201;
  
   // constants returned 
-  const ADDRESS_VERSION = 100;
-  const ADDRESS_ID = 101;
+  const VERSION = 3;  
+  const ID = 29; // Cu atomic number
   const ERROR_UNKNOW_COMMAND = 11206655; // only answer with meaningful data in the 3rd byte
-  
+    
   sig rst;  // reset signal
    
   .clk(clk) {
@@ -74,19 +81,27 @@ module cu_top (
      
     .rst(rst){
       
-      uart_rx rx (#BAUD(1000000), #CLK_FREQ(100000000)); // serial receiver
-      uart_tx tx (#BAUD(1000000), #CLK_FREQ(100000000)); // serial transmitter
+      uart_rx rx (#BAUD(57600), #CLK_FREQ(100000000)); // serial receiver
+      uart_tx tx (#BAUD(57600), #CLK_FREQ(100000000)); // serial transmitter
       
       reg_interface reg;
             
       // lasers
       laser_trigger l[NUM_LASERS];
-      cam_synchro camsync;// to synchronize all lasers on the same frame counter
+      signal_sync framesync; // to synchronize all lasers on the same frame counter
       
       dff sequence[NUM_LASERS][16];
       dff duration[NUM_LASERS][16];
       dff mode[NUM_LASERS][3];
       
+      // main trigger
+      camera_trigger trigger;
+      dff active_trigger;
+      dff start_trigger;
+      dff cam_pulse[16]; // pulse length of the camera trigger signal
+      dff cam_period[16]; // period of the camera trigger signal
+      dff cam_exposure[16]; // camera exposure
+      dff laser_delay[16]; // laser trigger delay
       // ttls
       dff ttl[NUM_TTL];
       
@@ -94,7 +109,7 @@ module cu_top (
       servo_standard servo_controller[NUM_SERVOS];
       dff position[NUM_SERVOS][16];
       dff servo_sig_update[NUM_SERVOS];
-      servo_stop servo_sig[NUM_SERVOS];// to shut down the servos 10 sec after every movement
+      servo_stop servo_sig[NUM_SERVOS]; // to shut down the servos 10 sec after every movement
       
       // pwm
       pwm pulsewm[NUM_PWM](#TOP(254),#DIV(9),#WIDTH(8));
@@ -104,7 +119,7 @@ module cu_top (
   }
 
   always {
-	  led = 8b0;       
+	led = 8b0;       
     tx.block = 0; // no blocking
   
     reset_cond.in = ~rst_n; // input raw inverted reset signal
@@ -146,6 +161,18 @@ module cu_top (
         } else if (reg.regOut.address < ADDR_PWM+NUM_PWM){           // PWM
           dutycycle.d[reg.regOut.address-ADDR_PWM] = reg.regOut.data[7:0];
           pwmupdate.d[reg.regOut.address-ADDR_PWM] = 1;
+        } else if (reg.regOut.address == ADDR_ACTIVE_TRIGGER){      // Active/passive camera trigger
+          active_trigger.d = reg.regOut.data[0];
+        } else if (reg.regOut.address == ADDR_START_TRIGGER){      // Camera trigger start
+          start_trigger.d = reg.regOut.data[0];
+        } else if (reg.regOut.address == ADDR_CAM_PULSE){      // Camera trigger length
+          cam_pulse.d = reg.regOut.data[15:0];
+        } else if (reg.regOut.address == ADDR_CAM_PERIOD){      // Camera trigger period
+          cam_period.d = reg.regOut.data[15:0];
+        } else if (reg.regOut.address == ADDR_CAM_EXPO){      // Exposure length
+          cam_exposure.d = reg.regOut.data[15:0];
+        } else if (reg.regOut.address == ADDR_LASER_DELAY){      // Laser trigger delay
+          laser_delay.d = reg.regOut.data[15:0];										
         } 
       } else { // read
          if (reg.regOut.address < ADDR_MODE+NUM_LASERS) {                // Laser modes 
@@ -166,11 +193,29 @@ module cu_top (
         } else if (reg.regOut.address < ADDR_PWM+NUM_PWM){           // PWM
           reg.regIn.data = dutycycle.q[reg.regOut.address-ADDR_PWM];        
           reg.regIn.drdy = 1;     
-        } else if (reg.regOut.address == ADDRESS_VERSION) {    // Version    
+        } else if (reg.regOut.address == ADDR_ACTIVE_TRIGGER) {    // Active/passive camera trigger
+          reg.regIn.data = active_trigger.q;      
+          reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDR_START_TRIGGER) {    // Camera trigger start
+          reg.regIn.data = start_trigger.q;      
+          reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDR_CAM_PULSE) {    // Camera trigger length   
+          reg.regIn.data = cam_pulse.q;     
+          reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDR_CAM_PERIOD) {    // Camera trigger period   
+          reg.regIn.data = cam_period.q;     
+          reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDR_CAM_EXPO) {    // Camera exposure length  
+          reg.regIn.data = cam_exposure.q;     
+          reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDR_LASER_DELAY) {    // Laser trigger delay  
+          reg.regIn.data = laser_delay.q;     
+          reg.regIn.drdy = 1;             
+        } else if (reg.regOut.address == ADDR_VERSION) {    // Version    
           reg.regIn.data = VERSION; // version number      
           reg.regIn.drdy = 1;             
-        } else if (reg.regOut.address == ADDRESS_ID) {    // ID   
-          reg.regIn.data = ID; // version number      
+        } else if (reg.regOut.address == ADDR_ID) {    // ID   
+          reg.regIn.data = ID; // id     
           reg.regIn.drdy = 1;             
         } else { // Error
           reg.regIn.data = ERROR_UNKNOW_COMMAND;        
@@ -179,14 +224,62 @@ module cu_top (
       }
     }
     
-    ///////////////// Lasers
-    camsync.camera = camera;
-    l.cam_sig = NUM_LASERSx{camera};
+    //////////////// TTLs
+    ttl0 = ttl.q[0];
+    ttl1 = ttl.q[1];
+    ttl2 = ttl.q[2];
+    ttl3 = ttl.q[3];
+    
+    //////////////// main trigger (triggering camera and lasers)
+    
+    // report trigger mode on LED
+    led[7] = active_trigger.q;    
+    
+    if(active_trigger.q){ // active trigger: the FPGA triggers both camera and lasers
+      // parameters from serial communication
+      trigger.start = start_trigger.q;
+      trigger.trigger_pulse = cam_pulse.q;
+      trigger.trigger_period = cam_period.q;
+      trigger.trigger_exposure = cam_exposure.q;
+      trigger.trigger_delay = laser_delay.q;
+      
+      // feed the exposure signal to the lasers
+      framesync.camera = trigger.trigger_lasers; // inter-laser sync module
+      l.cam_sig = NUM_LASERSx{trigger.trigger_lasers};
+      
+      // trigger camera
+      camera_out = trigger.trigger_camera;
+      
+      led[0] = start_trigger.q;
+      led[1] = trigger.trigger_camera;
+      led[2] = trigger.trigger_lasers;
+      led[3] = l.lasersignal[0];
+      led[4] = l.lasersignal[1];
+      led[5] = l.lasersignal[2];
+      led[6] = l.lasersignal[2]; 
+      
+    } else { // passive trigger: external camera triggers the FPGA/lasers
+    
+      trigger.start = 0;
+      trigger.trigger_pulse = 16x{0};
+      trigger.trigger_period = 16x{0};
+      trigger.trigger_exposure = 16x{0};
+      trigger.trigger_delay = 16x{0};
+      
+      camera_out = 0;
+      
+      framesync.camera = camera_in;
+      l.cam_sig = NUM_LASERSx{camera_in};
+      
+      led[2:0] = 3x{1};
+    }
+    
+    ///////////////// Lasers						
     l.seq = sequence.q;
     l.mod = mode.q;
     l.dura = duration.q; 
-    l.sync = NUM_LASERSx{{camsync.sync}};
-
+    l.sync = NUM_LASERSx{{framesync.sync}};
+    
     laser0 = l.lasersignal[0]; // laser trigger outputs
     laser1 = l.lasersignal[1];
     laser2 = l.lasersignal[2];
@@ -194,20 +287,13 @@ module cu_top (
     laser4 = l.lasersignal[4];
     laser5 = l.lasersignal[5];
     laser6 = l.lasersignal[6];
-    laser7 = l.lasersignal[7];
-    
-    //////////////// TTLs
-    ttl0 = ttl.q[0];
-    ttl1 = ttl.q[1];
-    ttl2 = ttl.q[2];
-    ttl3 = ttl.q[3];
-    ttl4 = ttl.q[4];
+    laser7 = l.lasersignal[7];		
     
     //////////////// Servos
     servo_controller.position = position.q;
     servo_sig.update = servo_sig_update.q;
     servo_sig.signal_in = servo_controller.servo;
-    servo0 = servo_sig.signal_out[0];// servo outputs from the servo_stop module
+    servo0 = servo_sig.signal_out[0]; // servo outputs from the servo_stop module
     servo1 = servo_sig.signal_out[1];
     servo2 = servo_sig.signal_out[2];
     servo3 = servo_sig.signal_out[3];
