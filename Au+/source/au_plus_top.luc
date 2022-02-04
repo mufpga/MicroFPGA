@@ -122,7 +122,7 @@ module au_plus_top (
       dff start_trigger;
       dff cam_pulse[16]; // pulse length of the camera fire signal
       dff cam_inter_frame[16]; // period between two frames
-      dff cam_exposure[16]; // camera exposure
+      dff cam_exposure[19]; // camera exposure
       dff cam_delay[16]; // laser trigger delay
       
       // ttls
@@ -197,7 +197,7 @@ module au_plus_top (
         } else if (reg.regOut.address == ADDR_CAM_PERIOD){      // Camera inter frame period
           cam_inter_frame.d = reg.regOut.data[15:0];
         } else if (reg.regOut.address == ADDR_CAM_EXPO){      // Exposure length
-          cam_exposure.d = reg.regOut.data[15:0];
+          cam_exposure.d = reg.regOut.data[18:0];
         } else if (reg.regOut.address == ADDR_LASER_DELAY){      // Laser trigger delay
           cam_delay.d = reg.regOut.data[15:0];	
         } 
@@ -293,7 +293,7 @@ module au_plus_top (
       camera.start = 0;
       camera.pulse = 16x{0};
       camera.inter_frame = 16x{0};
-      camera.exposure = 16x{0};
+      camera.exposure = 19x{0};
       camera.delay = 16x{0};
       
       camera_out = 0;

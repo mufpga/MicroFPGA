@@ -40,15 +40,14 @@ module camera_trigger (
     input start,
     input pulse[16], // pulse length of the camera trigger
     input inter_frame[16], // period of the camera trigger
-    input exposure[16], // exposure of a camera frame (for the lasers)
+    input exposure[19], // exposure of a camera frame (for the lasers)
     input delay[16], // delay for the laser exposure
     output fire_trigger,
     output exposure_trigger
   ) {
 
-  // 16 bits -> maximum of 6.5s with NM_CYCLES = 10000, since clock cycle = 100MHz
-  const NM_CYCLES = 10000; // convert to NM_CYCLES x 1e-8 = ~100 us
-  const DELAY_CYCLES = 1000; // ~10 us
+  // 16 bits -> maximum of 6.5ms with US_CYCLES = 100, since clock cycle = 100MHz
+  const US_CYCLES = 100; // US_CYCLES x 1e-8 = ~1 us
   var pulse_cycle;
   var period_cycle;
   var exposure_cycle;
@@ -58,22 +57,19 @@ module camera_trigger (
     .rst(rst) {
       // If x is the number of bits of pulse/delay/exposure/inter_frame
       // i.e. Nbits(trigger_length) = X
-      // Then, we must have Nbits(counter) > log2((2^X-1)*NM_CYCLES+1)
-      // For X=16 and NM_CYCLES = 10000, it yields Nbits(counter) > 29.3
-      // For X=16 and DELAY_CYCLES = 1000, it yields Nbits(counter) > 25.9
-      // since we add 3 16bits numbers in perdio_cycle, then we need
-      // X=18 to cover the maximum value:
-      // X=18 and NM_CYCLES = 10000 yields Nbits(counter) > 31.3
-      dff counter[32]; // cycles counter
-      dff delay_counter[26]; // delay counter
+      // Then, we must have Nbits(counter) > log2((2^X-1)*CYCLES+1)
+      // x=19 and US_CYCLES => 25.6
+      // x=16 and US_CYCLES => 22.6
+      dff counter[26]; // cycles counter
+      dff delay_counter[23]; // delay counter
     }
   }
   
   always {
-    pulse_cycle = pulse*NM_CYCLES;
-    period_cycle = (delay+exposure+inter_frame)*NM_CYCLES;
-    exposure_cycle = exposure*NM_CYCLES;
-    delay_cycle = delay*DELAY_CYCLES;
+    pulse_cycle = pulse*US_CYCLES;
+    period_cycle = (delay+inter_frame+exposure)*US_CYCLES;
+    exposure_cycle = exposure*US_CYCLES;
+    delay_cycle = delay*US_CYCLES;
     
     // increase counters until they max out
     if (!&counter.q){ 
