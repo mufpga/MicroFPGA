@@ -82,8 +82,8 @@ module au_plus_top (
   const ADDR_ACTIVE_TRIGGER = ADDR_PWM+NUM_PWM; // 40
   const ADDR_START_TRIGGER = ADDR_ACTIVE_TRIGGER+1; // 41
   const ADDR_CAM_PULSE = ADDR_START_TRIGGER+1; // 42
-  const ADDR_CAM_PERIOD = ADDR_CAM_PULSE+1; // 43
-  const ADDR_CAM_EXPO = ADDR_CAM_PERIOD+1; // 44
+  const ADDR_CAM_READOUT = ADDR_CAM_PULSE+1; // 43
+  const ADDR_CAM_EXPO = ADDR_CAM_READOUT+1; // 44
   const ADDR_LASER_DELAY = ADDR_CAM_EXPO+1; // 45
   
   const ADDR_AI = ADDR_LASER_DELAY+1;// 46
@@ -121,8 +121,8 @@ module au_plus_top (
       dff active_trigger;
       dff start_trigger;
       dff cam_pulse[16]; // pulse length of the camera fire signal
-      dff cam_inter_frame[16]; // period between two frames
-      dff cam_exposure[19]; // camera exposure
+      dff cam_readout[16]; // period between two frames
+      dff cam_exposure[20]; // camera exposure
       dff cam_delay[16]; // laser trigger delay
       
       // ttls
@@ -194,10 +194,10 @@ module au_plus_top (
           start_trigger.d = reg.regOut.data[0];
         } else if (reg.regOut.address == ADDR_CAM_PULSE){      // Camera trigger length
           cam_pulse.d = reg.regOut.data[15:0];
-        } else if (reg.regOut.address == ADDR_CAM_PERIOD){      // Camera inter frame period
-          cam_inter_frame.d = reg.regOut.data[15:0];
+        } else if (reg.regOut.address == ADDR_CAM_READOUT){      // Camera inter frame period
+          cam_readout.d = reg.regOut.data[15:0];
         } else if (reg.regOut.address == ADDR_CAM_EXPO){      // Exposure length
-          cam_exposure.d = reg.regOut.data[18:0];
+          cam_exposure.d = reg.regOut.data[19:0];
         } else if (reg.regOut.address == ADDR_LASER_DELAY){      // Laser trigger delay
           cam_delay.d = reg.regOut.data[15:0];	
         } 
@@ -229,8 +229,8 @@ module au_plus_top (
         } else if (reg.regOut.address == ADDR_CAM_PULSE) {    // Camera trigger length   
           reg.regIn.data = cam_pulse.q;     
           reg.regIn.drdy = 1;             
-        } else if (reg.regOut.address == ADDR_CAM_PERIOD) {    // Camera inter frame period   
-          reg.regIn.data = cam_inter_frame.q;     
+        } else if (reg.regOut.address == ADDR_CAM_READOUT) {    // Camera inter frame period   
+          reg.regIn.data = cam_readout.q;     
           reg.regIn.drdy = 1;             
         } else if (reg.regOut.address == ADDR_CAM_EXPO) {    // Camera exposure length  
           reg.regIn.data = cam_exposure.q;     
@@ -269,7 +269,7 @@ module au_plus_top (
       // parameters from serial communication
       camera.start = start_trigger.q;
       camera.pulse = cam_pulse.q;
-      camera.inter_frame = cam_inter_frame.q;
+      camera.readout = cam_readout.q;
       camera.exposure = cam_exposure.q;
       camera.delay = cam_delay.q;
       
@@ -292,8 +292,8 @@ module au_plus_top (
     
       camera.start = 0;
       camera.pulse = 16x{0};
-      camera.inter_frame = 16x{0};
-      camera.exposure = 19x{0};
+      camera.readout = 16x{0};
+      camera.exposure = 20x{0};
       camera.delay = 16x{0};
       
       camera_out = 0;

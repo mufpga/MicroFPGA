@@ -7,7 +7,7 @@
    * start: the output signals are only generated when start is HIGH, they are 
            0 otherwise.
    * pulse: pulse length of the fire trigger signal.
-   * inter_frame: period between the end of exposure and the next fire pulse.
+   * readout: period between the end of exposure and the next fire pulse.
    * exposure: pulse length of the exposure trigger signal.
    * delay: delay of theexposure trigger signal with respect to the fire trigger.
       
@@ -17,7 +17,7 @@
                      modules.
    
    Example: 
-                                         inter frame
+                                           readout
                                              <->
                <-pulse->
                ---------                        ---------      high    
@@ -39,14 +39,15 @@ module camera_trigger (
     input rst,  // reset
     input start,
     input pulse[16], // pulse length of the camera trigger
-    input inter_frame[16], // period of the camera trigger
-    input exposure[19], // exposure of a camera frame (for the lasers)
+    input readout[16], // period between the end of the exposure and the next fire
+    input exposure[20], // exposure of a camera frame (for the lasers)
     input delay[16], // delay for the laser exposure
     output fire_trigger,
     output exposure_trigger
   ) {
 
-  // 16 bits -> maximum of 6.5ms with US_CYCLES = 100, since clock cycle = 100MHz
+  // 16 bits -> maximum of 6.5 ms with US_CYCLES = 100, since clock cycle = 100MHz
+  // 20 bits -> maximum of 1.048575 s
   const US_CYCLES = 100; // US_CYCLES x 1e-8 = ~1 us
   var pulse_cycle;
   var period_cycle;
@@ -55,19 +56,19 @@ module camera_trigger (
   
   .clk(clk){ 
     .rst(rst) {
-      // If x is the number of bits of pulse/delay/exposure/inter_frame
+      // If x is the number of bits of pulse/delay/exposure/readout
       // i.e. Nbits(trigger_length) = X
       // Then, we must have Nbits(counter) > log2((2^X-1)*CYCLES+1)
-      // x=19 and US_CYCLES => 25.6
+      // x=20 and US_CYCLES => 26.6
       // x=16 and US_CYCLES => 22.6
-      dff counter[26]; // cycles counter
+      dff counter[27]; // cycles counter
       dff delay_counter[23]; // delay counter
     }
   }
   
   always {
     pulse_cycle = pulse*US_CYCLES;
-    period_cycle = (delay+inter_frame+exposure)*US_CYCLES;
+    period_cycle = (delay+readout+exposure)*US_CYCLES;
     exposure_cycle = exposure*US_CYCLES;
     delay_cycle = delay*US_CYCLES;
     
