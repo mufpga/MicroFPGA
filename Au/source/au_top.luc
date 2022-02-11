@@ -82,8 +82,8 @@ module au_top (
   const ADDR_ACTIVE_TRIGGER = ADDR_PWM+NUM_PWM; // 40
   const ADDR_START_TRIGGER = ADDR_ACTIVE_TRIGGER+1; // 41
   const ADDR_CAM_PULSE = ADDR_START_TRIGGER+1; // 42
-  const ADDR_CAM_PERIOD = ADDR_CAM_PULSE+1; // 43
-  const ADDR_CAM_EXPO = ADDR_CAM_PERIOD+1; // 44
+  const ADDR_CAM_READOUT = ADDR_CAM_PULSE+1; // 43
+  const ADDR_CAM_EXPO = ADDR_CAM_READOUT+1; // 44
   const ADDR_LASER_DELAY = ADDR_CAM_EXPO+1; // 45
   
   const ADDR_AI = ADDR_LASER_DELAY+1;// 46
@@ -117,13 +117,13 @@ module au_top (
       dff mode[NUM_LASERS][3];
       
       // main trigger
-      camera_trigger trigger;
+      camera_trigger camera;
       dff active_trigger;
       dff start_trigger;
-      dff cam_pulse[16]; // pulse length of the camera trigger signal
-      dff cam_period[16]; // period of the camera trigger signal
-      dff cam_exposure[16]; // camera exposure
-      dff laser_delay[16]; // laser trigger delay
+      dff cam_pulse[16]; // pulse length of the camera fire signal
+      dff cam_readout[16]; // period between two frames
+      dff cam_exposure[20]; // camera exposure
+      dff cam_delay[16]; // laser trigger delay
       
       // ttls
       dff ttl[NUM_TTL];
@@ -191,15 +191,15 @@ module au_top (
         } else if (reg.regOut.address == ADDR_ACTIVE_TRIGGER){      // Active/passive camera trigger
           active_trigger.d = reg.regOut.data[0];
         } else if (reg.regOut.address == ADDR_START_TRIGGER){      // Camera trigger start
-          start_trigger.d = reg.regOut.data[0];
+          start_trigger.d = reg.regOut.data[0];        
         } else if (reg.regOut.address == ADDR_CAM_PULSE){      // Camera trigger length
           cam_pulse.d = reg.regOut.data[15:0];
-        } else if (reg.regOut.address == ADDR_CAM_PERIOD){      // Camera trigger period
-          cam_period.d = reg.regOut.data[15:0];
+        } else if (reg.regOut.address == ADDR_CAM_READOUT){      // Camera inter frame period
+          cam_readout.d = reg.regOut.data[15:0];
         } else if (reg.regOut.address == ADDR_CAM_EXPO){      // Exposure length
-          cam_exposure.d = reg.regOut.data[15:0];
+          cam_exposure.d = reg.regOut.data[19:0];
         } else if (reg.regOut.address == ADDR_LASER_DELAY){      // Laser trigger delay
-          laser_delay.d = reg.regOut.data[15:0];
+          cam_delay.d = reg.regOut.data[15:0];	
         } 
       } else { // read
          if (reg.regOut.address < ADDR_MODE+NUM_LASERS) {                // Laser modes 
@@ -229,15 +229,15 @@ module au_top (
         } else if (reg.regOut.address == ADDR_CAM_PULSE) {    // Camera trigger length   
           reg.regIn.data = cam_pulse.q;     
           reg.regIn.drdy = 1;             
-        } else if (reg.regOut.address == ADDR_CAM_PERIOD) {    // Camera trigger period   
-          reg.regIn.data = cam_period.q;     
+        } else if (reg.regOut.address == ADDR_CAM_READOUT) {    // Camera inter frame period   
+          reg.regIn.data = cam_readout.q;     
           reg.regIn.drdy = 1;             
         } else if (reg.regOut.address == ADDR_CAM_EXPO) {    // Camera exposure length  
           reg.regIn.data = cam_exposure.q;     
           reg.regIn.drdy = 1;             
         } else if (reg.regOut.address == ADDR_LASER_DELAY) {    // Laser trigger delay  
-          reg.regIn.data = laser_delay.q;     
-          reg.regIn.drdy = 1;             
+          reg.regIn.data = cam_delay.q;     
+          reg.regIn.drdy = 1;		        
         } else if (reg.regOut.address < ADDR_AI+NUM_ANALOG) {        // Analog input   
           reg.regIn.data = analog_out.q[reg.regOut.address-ADDR_AI];        
           reg.regIn.drdy = 1;             
@@ -267,22 +267,22 @@ module au_top (
     
     if(active_trigger.q){ // active trigger: the FPGA triggers both camera and lasers
       // parameters from serial communication
-      trigger.start = start_trigger.q;
-      trigger.trigger_pulse = cam_pulse.q;
-      trigger.trigger_period = cam_period.q;
-      trigger.trigger_exposure = cam_exposure.q;
-      trigger.trigger_delay = laser_delay.q;
+      camera.start = start_trigger.q;
+      camera.pulse = cam_pulse.q;
+      camera.readout = cam_readout.q;
+      camera.exposure = cam_exposure.q;
+      camera.delay = cam_delay.q;
       
       // feed the exposure signal to the lasers
-      framesync.camera = trigger.trigger_lasers; // inter-laser sync module
-      l.cam_sig = NUM_LASERSx{trigger.trigger_lasers};
+      framesync.camera = camera.exposure_trigger; // inter-laser sync module
+      l.cam_sig = NUM_LASERSx{camera.exposure_trigger};
       
       // trigger camera
-      camera_out = trigger.trigger_camera;
+      camera_out = camera.fire_trigger;
       
       led[0] = start_trigger.q;
-      led[1] = trigger.trigger_camera;
-      led[2] = trigger.trigger_lasers;
+      led[1] = camera.fire_trigger;
+      led[2] = camera.exposure_trigger;
       led[3] = l.lasersignal[0];
       led[4] = l.lasersignal[1];
       led[5] = l.lasersignal[2];
@@ -290,11 +290,11 @@ module au_top (
       
     } else { // passive trigger: external camera triggers the FPGA/lasers
     
-      trigger.start = 0;
-      trigger.trigger_pulse = 16x{0};
-      trigger.trigger_period = 16x{0};
-      trigger.trigger_exposure = 16x{0};
-      trigger.trigger_delay = 16x{0};
+      camera.start = 0;
+      camera.pulse = 16x{0};
+      camera.readout = 16x{0};
+      camera.exposure = 20x{0};
+      camera.delay = 16x{0};
       
       camera_out = 0;
       
