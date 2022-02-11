@@ -98,7 +98,7 @@ module cu_top (
       camera_trigger camera;
       dff active_trigger;
       dff start_trigger;
-      dff cam_pulse[16]; // pulse length of the camera fire signal
+      dff cam_pulse[20]; // pulse length of the camera fire signal
       dff cam_readout[16]; // period between two frames
       dff cam_exposure[20]; // camera exposure
       dff cam_delay[16]; // laser trigger delay
@@ -167,7 +167,7 @@ module cu_top (
         } else if (reg.regOut.address == ADDR_START_TRIGGER){      // Camera trigger start
           start_trigger.d = reg.regOut.data[0];
         } else if (reg.regOut.address == ADDR_CAM_PULSE){      // Camera trigger length
-          cam_pulse.d = reg.regOut.data[15:0];
+          cam_pulse.d = reg.regOut.data[19:0];
         } else if (reg.regOut.address == ADDR_CAM_READOUT){      // Camera inter frame period
           cam_readout.d = reg.regOut.data[15:0];
         } else if (reg.regOut.address == ADDR_CAM_EXPO){      // Exposure length
@@ -262,7 +262,7 @@ module cu_top (
     } else { // passive trigger: external camera triggers the FPGA/lasers
     
       camera.start = 0;
-      camera.pulse = 16x{0};
+      camera.pulse = 20x{0};
       camera.readout = 16x{0};
       camera.exposure = 20x{0};
       camera.delay = 16x{0};

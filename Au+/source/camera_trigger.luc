@@ -38,7 +38,7 @@ module camera_trigger (
     input clk,  // clock
     input rst,  // reset
     input start,
-    input pulse[16], // pulse length of the camera trigger
+    input pulse[20], // pulse length of the camera trigger
     input readout[16], // period between the end of the exposure and the next fire
     input exposure[20], // exposure of a camera frame (for the lasers)
     input delay[16], // delay for the laser exposure
