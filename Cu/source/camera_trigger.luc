@@ -46,7 +46,7 @@ module camera_trigger (
     output exposure_trigger
   ) {
 
-  // 16 bits -> maximum of 6.5 ms with US_CYCLES = 100, since clock cycle = 100MHz
+  // 16 bits -> maximum of 65.535 ms with US_CYCLES = 100, since clock cycle = 100MHz
   // 20 bits -> maximum of 1.048575 s
   const US_CYCLES = 100; // US_CYCLES x 1e-8 = ~1 us
   var pulse_cycle;
