@@ -25,7 +25,7 @@ module laser_trigger (
     input rst,  // reset
     input cam_sig,
     input mod[3],
-    input dura[16],
+    input dura[20],
     input seq[16],
     input sync[4],
     output lasersignal
@@ -44,10 +44,15 @@ module laser_trigger (
     .rst(rst) {
       dff sig_sync[4];
       dff sig_old;
-      dff count_sig[23];
+      dff count_sig[27];
   }}
   
   always {
+    // If x is the number of bits of dura
+    // i.e. Nbits(dura) = X
+    // Then, we must have Nbits(counter) > log2((2^X-1)*NM_CYCLES+1)
+    // X=20, NM_CYCLES=100 => Nbits(count_sig) > 26.6
+    // X=16, NM_CYCLES=100 => Nbits(count_sig) > 22.6
     plength = dura*NM_CYCLES;
     
     sig_sync.d[0] = cam_sig;

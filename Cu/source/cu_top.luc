@@ -91,7 +91,7 @@ module cu_top (
       signal_sync framesync; // to synchronize all lasers on the same frame counter
       
       dff sequence[NUM_LASERS][16];
-      dff duration[NUM_LASERS][16];
+      dff duration[NUM_LASERS][20];
       dff mode[NUM_LASERS][3];
       
       // main trigger
@@ -151,7 +151,7 @@ module cu_top (
         if (reg.regOut.address < ADDR_MODE+NUM_LASERS) {         // Laser modes  
           mode.d[reg.regOut.address-ADDR_MODE] = reg.regOut.data[2:0];     
         } else if (reg.regOut.address < ADDR_DUR+NUM_LASERS) {         // Laser duration
-          duration.d[reg.regOut.address-ADDR_DUR] = reg.regOut.data[15:0]; 
+          duration.d[reg.regOut.address-ADDR_DUR] = reg.regOut.data[19:0]; 
         } else if (reg.regOut.address < ADDR_SEQ+NUM_LASERS) {            // Laser sequence
           sequence.d[reg.regOut.address-ADDR_SEQ] = reg.regOut.data[15:0];    
         } else if (reg.regOut.address < ADDR_TTL+NUM_TTL){           // TTL

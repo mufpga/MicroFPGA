@@ -59,8 +59,8 @@ module camera_trigger (
       // If x is the number of bits of pulse/delay/exposure/readout
       // i.e. Nbits(trigger_length) = X
       // Then, we must have Nbits(counter) > log2((2^X-1)*CYCLES+1)
-      // x=20 and US_CYCLES => 26.6
-      // x=16 and US_CYCLES => 22.6
+      // x=20 and US_CYCLES=100 => Nbits(counter) > 26.6
+      // x=16 and US_CYCLES=100 => Nbits(counter) > 22.6
       dff counter[27]; // cycles counter
       dff delay_counter[23]; // delay counter
     }
