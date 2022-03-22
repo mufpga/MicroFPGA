@@ -9,4 +9,6 @@ This repository contains the FPGA configuration for the [Au](https://www.sparkfu
 
 #### Check out the project homepage for the documentation, resources and tutorials: [mufpga.github.io](https://mufpga.github.io).
 
-MicroFPGA was written by Joran Deschamps, EMBL (2020). It was tested with AlchitryLabs 1.2.7.
+MicroFPGA was written by Joran Deschamps, EMBL (2020). It was tested with AlchitryLabs 1.2.7, Vivado 2020.2
+and Icecube2 2017.08 in Windows 10.
+
