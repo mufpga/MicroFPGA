@@ -23,7 +23,7 @@ This repository contains the FPGA configuration for the [Au](https://www.sparkfu
 
 
 
-<---
+<!---
 
 ## Cite us
 
