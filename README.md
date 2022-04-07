@@ -20,8 +20,8 @@ Documentation and tutorials are available on [https://mufpga.github.io/](https:/
 
 This repository contains the FPGA configuration for the [Au](https://www.sparkfun.com/products/16527), [Au+](https://www.sparkfun.com/products/17514) and [Cu](https://www.sparkfun.com/products/16526) FPGAs (Alchitry). In order to use MicroFPGA the configuration must be uploaded to the FPGA using [AlchitryLabs](https://alchitry.com/alchitry-labs) or AlchitryLoader.
 
-- Pre-compiled files can be downloaded [here](https://github.com/mufpga/MicroFPGA/releases/tag/v3).
-- Instructions on how to build and upload the source code can be found on the [project's website](https://github.com/mufpga/MicroFPGA/releases/tag/v3).
+- Pre-compiled files can be downloaded [here](https://github.com/mufpga/MicroFPGA/releases).
+- Instructions on how to build and upload the source code can be found on the [project's website](https://mufpga.github.io/2_installing_microfpga.html).
 
 
 
