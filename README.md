@@ -24,14 +24,9 @@ This repository contains the FPGA configuration for the [Au](https://www.sparkfu
 - Instructions on how to build and upload the source code can be found on the [project's website](https://mufpga.github.io/2_installing_microfpga.html).
 
 
-
-<!---
-
 ## Cite us
+Joran Deschamps, Christian Kieser, Philipp Hoess, Takahiro Deguchi, Jonas Ries, "MicroFPGA: an affordable FPGA platform for microscope control",
+bioRxiv 2022.06.07.495178.
 
-Deschamps J, Kieser C, Hoess P, Deguchi T and Ries J, 
-
---->
 
 MicroFPGA was written by Joran Deschamps, EMBL (2020).
-
